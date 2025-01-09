@@ -2,7 +2,7 @@ import React from "react";
 import Icon from "../icon/icons";
 import Image from "next/image";
 
-type ProfileCardTypes = {
+export type ProfileCardTypes = {
 	name: string;
 	designation: string;
 	avatarUrl: string;

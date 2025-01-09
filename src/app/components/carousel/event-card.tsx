@@ -2,7 +2,7 @@ import React from "react";
 import CustomButton from "../button/button";
 import Image from "next/image";
 
-interface EventData {
+export interface EventDataTypes {
 	eventData: string; // Date range of the event
 	eventName: string; // Name of the event
 	eventTagLine: string; // Tagline of the event
@@ -10,10 +10,23 @@ interface EventData {
 	eventAudience: number; // Expected audience count
 }
 
-function EventCard({ ...event }: EventData) {
+function EventCard({
+	event = {
+		eventData: "",
+		eventName: "Default Event Name",
+		eventTagLine: "",
+		eventDescription: "",
+		eventAudience: 0,
+	},
+	type = "carousel",
+}: {
+	event?: EventDataTypes;
+	type?: string;
+}) {
+	const classesForEvent = `${type === "card" ? "flex flex-col-reverse max-w-[360px] justify-end" : "flex flex-row "}`;
 	return (
-		<div className="border border-divider dark:border-dark-4 rounded-[10px] overflow-hidden flex flex-row">
-			<div className="w-1/2 p-50 flex flex-col gap-40">
+		<div className={`border border-divider dark:border-dark-4 rounded-[10px] overflow-hidden ${classesForEvent}`}>
+			<div className={`${type === "card" ? "w-full p-30" : "w-1/2 p-50"} flex flex-col gap-40`}>
 				<div>
 					<p className="text-title2 mb-20 dark:text-white">{event.eventData}</p>
 					<h4 className="font-semibold text-h4 dark:text-white">{event.eventName}</h4>
@@ -32,7 +45,7 @@ function EventCard({ ...event }: EventData) {
 									"bg-primary-green text-white text-[9.2px] font-semibold grid place-items-center border-0"
 								}`}>
 								{index === 4 ? (
-									<span key={index}>`${event.eventAudience - 4}+`</span>
+									<span key={index}>{`${event.eventAudience - 4}+`}</span>
 								) : (
 									<Image
 										key={index}
@@ -41,6 +54,7 @@ function EventCard({ ...event }: EventData) {
 										loading="lazy"
 										width={16}
 										height={9}
+										className="w-full h-full"
 									/>
 								)}
 							</div>
@@ -54,7 +68,7 @@ function EventCard({ ...event }: EventData) {
 					<CustomButton variant="secondary">Learn More</CustomButton>
 				</div>
 			</div>
-			<div className="w-1/2 relative">
+			<div className={`${type === "card" ? "w-full" : "w-1/2"} relative`}>
 				<Image
 					src="/event-1.png"
 					alt="event"

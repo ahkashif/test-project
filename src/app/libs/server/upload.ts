@@ -4,7 +4,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { nanoid } from "nanoid";
 
-export async function UploadImage(image: File): Promise<string> {
+export async function UploadImage(image: File, folderName: string): Promise<string> {
 	try {
 		const client = new S3Client({
 			region: process.env.REGION,
@@ -14,7 +14,7 @@ export async function UploadImage(image: File): Promise<string> {
 			},
 		});
 
-		const uniqueKey = `uploads/${nanoid()}-${image.name}`;
+		const uniqueKey = `${folderName}/${nanoid()}-${image.name}`;
 
 		const putObject = new PutObjectCommand({
 			Bucket: process.env.BUCKET_NAME!,

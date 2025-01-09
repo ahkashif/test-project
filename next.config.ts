@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
 				pathname: "/uploads/**", // Pathname pattern (allows all images in "uploads" folder)
 			},
 		],
+		domains: ["pif-realestate-1.s3.us-east-1.amazonaws.com"],
 	},
 
 	async rewrites() {

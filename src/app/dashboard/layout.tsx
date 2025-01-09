@@ -52,19 +52,14 @@ export default function DashboardLayout({
 							route={"/dashboard/ignite"}
 						/>
 						<AsideLink
-							text={"Companies"}
-							iconName={"companies"}
-							route={"/dashboard/companies"}
-						/>
-						<AsideLink
 							text={"Community"}
 							iconName={"community-1"}
 							route={"/dashboard/community"}
 						/>
 						<AsideLink
-							text={"Experts"}
+							text={"Networking"}
 							iconName={"expert"}
-							route={"/dashboard/expets"}
+							route={"/dashboard/networking"}
 						/>
 						<AsideLink
 							text={"Events"}

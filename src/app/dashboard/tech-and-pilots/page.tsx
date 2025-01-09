@@ -16,7 +16,7 @@ const Pilot: React.FC = () => {
 	const getPilotsData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
-			const DOMAIN = process.env.DOMAIN!;
+			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
 			const response = await axios.get(`${DOMAIN}/api/common/get-pilots`);
 			dispatch(initializeFormData(response.data.data));
 			setPilotsData(response.data.data);

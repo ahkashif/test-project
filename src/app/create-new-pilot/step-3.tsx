@@ -4,6 +4,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../libs/store/store";
 import { updateFormData, Step3Data } from "../libs/store/slices/createPilotSlice";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface FormData {
 	planningPhase: string;
@@ -14,6 +16,7 @@ interface FormData {
 
 function Step3({ step3Ref }: { step3Ref: Ref<HTMLButtonElement> }) {
 	const dispatch = useDispatch();
+	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
@@ -28,19 +31,19 @@ function Step3({ step3Ref }: { step3Ref: Ref<HTMLButtonElement> }) {
 
 			console.log(data, formData.step1);
 
-			// try {
-			// 	const response = await axios.post("/api/common/add-pilot", {
-			// 		step1: { ...formData.step1 },
-			// 		step2: { ...formData.step2 },
-			// 		step3: data,
-			// 	});
-			// 	if (response.status === 200) {
-			// 		console.log("Pilot Added", response);
-			// 		router.push("/dashboard/tech-and-pilots");
-			// 	}
-			// } catch (error) {
-			// 	console.log(error);
-			// }
+			try {
+				const response = await axios.post("/api/common/add-pilot", {
+					step1: { ...formData.step1 },
+					step2: { ...formData.step2 },
+					step3: data,
+				});
+				if (response.status === 200) {
+					console.log("Pilot Added", response);
+					router.push("/dashboard/tech-and-pilots");
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		}
 	};
 

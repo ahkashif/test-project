@@ -62,7 +62,7 @@ export const SignupForm = () => {
 			setLoading(true);
 			let profilePhotoUrl = null;
 			if (data.profilePhoto) {
-				profilePhotoUrl = await UploadImage(data.profilePhoto);
+				profilePhotoUrl = await UploadImage(data.profilePhoto, "uploads");
 			}
 
 			const registrationData = {

@@ -189,6 +189,7 @@ module.exports = {
 					mintGreen: "#00d196",
 					lightMint: "#53ffe1",
 					cyan: "#0298AC",
+					blackShade: "#000000CC",
 				},
 				dark: {
 					1: "#232323",

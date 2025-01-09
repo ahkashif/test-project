@@ -74,11 +74,14 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 
 								{carouselType === "EVENTS" && (
 									<EventCard
-										eventData={(data as EventSlide).eventData} // Narrow the type to EventSlide
-										eventName={(data as EventSlide).eventName}
-										eventTagLine={(data as EventSlide).eventTagLine}
-										eventDescription={(data as EventSlide).eventDescription}
-										eventAudience={(data as EventSlide).eventAudience}
+										key={index}
+										event={{
+											eventData: (data as EventSlide).eventData,
+											eventName: (data as EventSlide).eventName,
+											eventTagLine: (data as EventSlide).eventTagLine,
+											eventDescription: (data as EventSlide).eventDescription,
+											eventAudience: (data as EventSlide).eventAudience,
+										}}
 									/>
 								)}
 								{carouselType === "INNOVATION" && (

@@ -11,7 +11,7 @@ import { setLoading } from "@/app/libs/store/slices/pagePropertiesSlice";
 import axios from "axios";
 import { IgniteTypes } from "@/app/api/common/add-ignite/route";
 
-const Ignite: React.FC = () => {
+const Challenges: React.FC = () => {
 	const dispatch = useDispatch();
 
 	const [ignitesData, setIgnitesData] = useState<IgniteTypes[]>([]);
@@ -79,4 +79,4 @@ const Ignite: React.FC = () => {
 	);
 };
 
-export default Ignite;
+export default Challenges;

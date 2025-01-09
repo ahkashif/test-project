@@ -68,16 +68,21 @@ function Header() {
 
 		const fetchUser = async () => {
 			const response = await axios.get("/api/users/profile");
-			const data = response.data.data;
 
-			dispatch(
-				updateUserDetails({
-					username: data.username,
-					email: data.email,
-					profilePhoto: data.profilePhoto,
-					designation: data.designation,
-				})
-			);
+			if (response.status === 200) {
+				const data = response.data.data;
+
+				dispatch(
+					updateUserDetails({
+						username: data.username,
+						email: data.email,
+						profilePhoto: data.profilePhoto,
+						designation: data.designation,
+					})
+				);
+			} else if (response.status === 400) {
+				router.push("/login");
+			}
 		};
 
 		if (token) {
