@@ -19,13 +19,17 @@ function EventCard({
 		eventAudience: 0,
 	},
 	type = "carousel",
+	width = "small",
 }: {
 	event?: EventDataTypes;
 	type?: string;
+	width?: string;
 }) {
 	const classesForEvent = `${type === "card" ? "flex flex-col-reverse max-w-[360px] justify-end" : "flex flex-row "}`;
+	const widthClasses = `${width === "large" ? "max-w-[32%]" : ""}`;
 	return (
-		<div className={`border border-divider dark:border-dark-4 rounded-[10px] overflow-hidden ${classesForEvent}`}>
+		<div
+			className={`border border-divider dark:border-dark-4 rounded-[10px] overflow-hidden ${classesForEvent} ${widthClasses}`}>
 			<div className={`${type === "card" ? "w-full p-30" : "w-1/2 p-50"} flex flex-col gap-40`}>
 				<div>
 					<p className="text-title2 mb-20 dark:text-white">{event.eventData}</p>

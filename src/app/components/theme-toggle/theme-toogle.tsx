@@ -10,7 +10,6 @@ export function ModeToggle() {
 	const { setTheme } = useTheme();
 
 	const changeCurrTheme = () => {
-		console.log("first");
 		if (currtheme === "light") {
 			setTheme("dark");
 			setCurrTheme("dark");
@@ -21,7 +20,6 @@ export function ModeToggle() {
 	};
 
 	useEffect(() => {
-		console.log("setting");
 		setTheme("light");
 		setCurrTheme("light");
 	}, []);

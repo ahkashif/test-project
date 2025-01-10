@@ -20,7 +20,7 @@ const Events = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [view, setView] = useState("grid");
 
-	const getCommunityData = async () => {
+	const getEventsData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
 			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
@@ -35,7 +35,7 @@ const Events = () => {
 	};
 
 	useEffect(() => {
-		getCommunityData();
+		getEventsData();
 	}, []);
 
 	useEffect(() => {

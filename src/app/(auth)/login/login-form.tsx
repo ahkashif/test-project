@@ -19,6 +19,7 @@ export function LoginForm() {
 	});
 	const [buttonDisabled, setButtonDisabled] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [fromError, setFormError] = useState("");
 
 	useEffect(() => {
 		if (user.email.length > 0 && user.password.length > 0) {
@@ -42,6 +43,8 @@ export function LoginForm() {
 					})
 				);
 				router.push("/dashboard");
+			} else {
+				setFormError(response.statusText);
 			}
 		} catch (error) {
 			setLoading(false);
@@ -86,6 +89,8 @@ export function LoginForm() {
 					/>
 					<div className="text-underlineLink2 underline text-right">Forget Password?</div>
 				</div>
+
+				{fromError && <p className="text-body3 font-regular text-red-600">{fromError}</p>}
 
 				<CustomButton
 					variant="primary"

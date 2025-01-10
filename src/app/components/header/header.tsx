@@ -158,13 +158,13 @@ function Header() {
 							Community
 						</Link>
 						<Link
-							href="/experts"
+							href="/networking"
 							className={`text-body2 py-2 px-2 flex items-center min-h-[90px] transition-colors duration-300 hover:text-green-700 dark:text-white ${
-								pathName === "/experts"
+								pathName === "/networking"
 									? "border-b-4 border-primary-lightGreen1 font-medium text-primary-lightGreen1"
 									: "text-foreground"
 							}`}>
-							Experts
+							Networking
 						</Link>
 						<Link
 							href="/events"
