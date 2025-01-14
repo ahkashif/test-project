@@ -275,8 +275,10 @@ const IgniteForm = ({ closeForm }: IgniteFormTypes) => {
 							className="w-full border border-divider rounded-[10px] p-[15px] appearance-none  bg-white focus:outline-none focus:ring-1 focus:ring-gray-4 focus:border-gray-4">
 							<option value="">Select</option>
 							<option value="Mobility">Mobility</option>
-							<option value="Sector 1">Sector 1</option>
-							<option value="Sector 2">Sector 2</option>
+							<option value="Construction">Construction</option>
+							<option value="Infrastructure & Utilities">Infrastructure & Utilities</option>
+							<option value="Smart City & Proptech">Smart City & Proptech</option>
+							<option value="Environment & Sustainability">Environment & Sustainability</option>
 						</select>
 						<div className="absolute inset-y-0 right-[10px] flex items-center pointer-events-none">
 							<svg

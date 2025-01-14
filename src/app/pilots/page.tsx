@@ -24,9 +24,10 @@ export default function About() {
 			dispatch(setLoading({ loading: true }));
 			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
 			const response = await axios.get(`${DOMAIN}/api/common/get-pilots`);
+			console.log(response);
 			getPilotsData();
 			dispatch(setLoading({ loading: false }));
-			setPilotsData(response.data.data);
+			setFilteredData(response.data.data);
 		} catch (error) {
 			console.error("Error fetching data:", error);
 			dispatch(setLoading({ loading: false }));
@@ -34,6 +35,7 @@ export default function About() {
 	};
 
 	useEffect(() => {
+		setPilotsData([]);
 		getPilotsData();
 	}, []);
 
@@ -84,7 +86,7 @@ export default function About() {
 					</div>
 				</div>
 
-				<div>
+				<div className="pif-pilots">
 					<div className="flex flex-col gap-30 p-70">
 						{filteredData.slice(0, visibleCount).map((data, index) => (
 							<PioltCard

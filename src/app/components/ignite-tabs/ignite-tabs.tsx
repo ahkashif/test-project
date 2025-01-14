@@ -153,8 +153,22 @@ function IgniteTabsComponent({ ignites }: IgniteTabsProps) {
 							<div className="flex flex-row gap-30 flex-wrap">
 								{filteredData.slice(0, visibleCount).map((data, index) => (
 									<IgniteCard
+										ignite={{
+											ideaName: data.ideaName,
+											ideaDescription: data.ideaDescription,
+											submissionSource: data.submissionSource,
+											associatedChallenges: data.associatedChallenges,
+											submittedBy: data.submittedBy,
+											category: data.category,
+											sector: data.sector,
+											technologyProvider: data.technologyProvider,
+											technologyType: data.technologyType,
+											supportingFiles: data.supportingFiles,
+											status: data.status,
+											submissionDate: data.submissionDate,
+										}}
+										width={"w-[31%]"}
 										key={index}
-										{...data}
 									/>
 								))}
 							</div>
@@ -188,8 +202,22 @@ function IgniteTabsComponent({ ignites }: IgniteTabsProps) {
 									.slice(0, visibleCount)
 									.map((data, index) => (
 										<IgniteCard
+											ignite={{
+												ideaName: data.ideaName,
+												ideaDescription: data.ideaDescription,
+												submissionSource: data.submissionSource,
+												associatedChallenges: data.associatedChallenges,
+												submittedBy: data.submittedBy,
+												category: data.category,
+												sector: data.sector,
+												technologyProvider: data.technologyProvider,
+												technologyType: data.technologyType,
+												supportingFiles: data.supportingFiles,
+												status: data.status,
+												submissionDate: data.submissionDate,
+											}}
+											width={"w-[31%]"}
 											key={index}
-											{...data}
 										/>
 									))}
 							</div>
@@ -224,8 +252,22 @@ function IgniteTabsComponent({ ignites }: IgniteTabsProps) {
 									.slice(0, visibleCount)
 									.map((data, index) => (
 										<IgniteCard
+											ignite={{
+												ideaName: data.ideaName,
+												ideaDescription: data.ideaDescription,
+												submissionSource: data.submissionSource,
+												associatedChallenges: data.associatedChallenges,
+												submittedBy: data.submittedBy,
+												category: data.category,
+												sector: data.sector,
+												technologyProvider: data.technologyProvider,
+												technologyType: data.technologyType,
+												supportingFiles: data.supportingFiles,
+												status: data.status,
+												submissionDate: data.submissionDate,
+											}}
+											width={"w-[31%]"}
 											key={index}
-											{...data}
 										/>
 									))}
 							</div>
@@ -259,8 +301,22 @@ function IgniteTabsComponent({ ignites }: IgniteTabsProps) {
 									.slice(0, visibleCount)
 									.map((data, index) => (
 										<IgniteCard
+											ignite={{
+												ideaName: data.ideaName,
+												ideaDescription: data.ideaDescription,
+												submissionSource: data.submissionSource,
+												associatedChallenges: data.associatedChallenges,
+												submittedBy: data.submittedBy,
+												category: data.category,
+												sector: data.sector,
+												technologyProvider: data.technologyProvider,
+												technologyType: data.technologyType,
+												supportingFiles: data.supportingFiles,
+												status: data.status,
+												submissionDate: data.submissionDate,
+											}}
+											width={"w-[31%]"}
 											key={index}
-											{...data}
 										/>
 									))}
 							</div>

@@ -230,6 +230,7 @@ module.exports = {
 				background1: "#FAF4EB",
 				background2: "#FBFBFB",
 				background3: "#FFD3991A",
+				background4: "#DFECEA80",
 				card: {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",

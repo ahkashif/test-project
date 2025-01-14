@@ -26,7 +26,9 @@ function EventCard({
 	width?: string;
 }) {
 	const classesForEvent = `${type === "card" ? "flex flex-col-reverse max-w-[360px] justify-end" : "flex flex-row "}`;
-	const widthClasses = `${width === "large" ? "max-w-[32%]" : ""}`;
+	const widthClasses = `${width === "large" ? "!max-w-[31.5%]" : ""}`;
+	if (width === "small") {
+	}
 	return (
 		<div
 			className={`border border-divider dark:border-dark-4 rounded-[10px] overflow-hidden ${classesForEvent} ${widthClasses}`}>

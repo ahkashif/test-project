@@ -119,13 +119,16 @@ const Community = () => {
 								return (
 									<ExpertCard
 										key={index}
-										name={comm.name}
-										badge={comm.badge}
-										title={comm.title}
-										company={comm.company}
-										yearsOfExperience={comm.yearsOfExperience}
-										sector={comm.sector}
-										profileImage={comm.profileImage}
+										expert={{
+											name: comm.name,
+											badge: comm.badge,
+											title: comm.title,
+											company: comm.company,
+											yearsOfExperience: comm.yearsOfExperience,
+											sector: comm.sector,
+											profileImage: comm.profileImage,
+										}}
+										width="w-[32%]"
 									/>
 								);
 							})}

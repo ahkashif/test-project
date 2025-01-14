@@ -12,9 +12,16 @@ export type ExpertCardTypes = {
 	profileImage: string;
 };
 
-function ExpertCard({ name, badge, title, company, yearsOfExperience, sector, profileImage }: ExpertCardTypes) {
+interface ExpertCardComp {
+	expert: ExpertCardTypes;
+	width: string;
+}
+
+function ExpertCard({ expert, width }: ExpertCardComp) {
+	const { name, badge, title, company, yearsOfExperience, sector, profileImage } = expert;
+
 	return (
-		<div className="border border-divider dark:border-dark-4 text-left rounded-[10px] w-[32%]">
+		<div className={`border border-divider dark:border-dark-4 text-left rounded-[10px] ${width}`}>
 			<div className="p-30 border-b border-divider dark:border-dark-4 bg-white rounded-[10px] dark:bg-gray-1 min-h-[255px]">
 				<div className="flex flex-row gap-20">
 					<div className="border border-divider dark:border-dark-4 rounded-[80px] min-w-[80px] h-[80px] relative">

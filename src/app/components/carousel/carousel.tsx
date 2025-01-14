@@ -17,22 +17,25 @@ import {
 } from "../../mockData/carousels";
 import EventCard from "./event-card";
 import InnovationCard from "./innovation-cards";
+import IgniteCard from "../ignite-card/ignite-card";
 
 type PropType = {
 	slidesData: string;
 	carouselType: string;
 	slidesInView: number;
+	slidesArray?: any;
 };
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-	const { slidesData, carouselType, slidesInView } = props;
+	const { slidesData, carouselType, slidesInView, slidesArray = [] } = props;
 	const OPTIONS: EmblaOptionsType = { align: "start", dragFree: true };
 	let SLIDE_COUNT;
 
 	if (slidesData in CAROUSELS_DATA) {
 		SLIDE_COUNT = CAROUSELS_DATA[slidesData as keyof CarouselsData].length;
 	} else {
-		console.error("Invalid key:", slidesData);
+		SLIDE_COUNT = slidesArray.length || [];
+		// console.warn("Invalid key:", slidesData);
 	}
 	const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 
@@ -40,7 +43,13 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 	const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi);
 
 	const slideClasses =
-		slidesInView === 1 ? `flex-[0_0_66%]` : carouselType === "INNOVATION" ? `flex-[0_0_28.2%]` : `flex-[0_0_28%]`;
+		slidesInView === 1
+			? "flex-[0_0_66%]"
+			: carouselType === "INNOVATION"
+			? "flex-[0_0_28.2%]"
+			: slidesArray.length > 0
+			? "flex-[0_0_30%]"
+			: "flex-[0_0_28%]";
 
 	return (
 		<section className="mx-auto">
@@ -49,7 +58,12 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 				ref={emblaRef}>
 				<div className="flex ml-[4rem] mr-[4rem]">
 					{SLIDES.map((index) => {
-						const data = CAROUSELS_DATA[slidesData as keyof CarouselsData][index];
+						let data;
+						if (slidesData !== "") {
+							data = CAROUSELS_DATA[slidesData as keyof CarouselsData][index];
+						} else {
+							data = slidesArray[index];
+						}
 
 						return (
 							<div
@@ -83,6 +97,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 											eventDescription: (data as EventSlide).eventDescription,
 											eventAudience: (data as EventSlide).eventAudience,
 										}}
+										type="card"
 									/>
 								)}
 								{carouselType === "INNOVATION" && (
@@ -90,6 +105,27 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 										icon={(data as InnovationSlide).icon}
 										title={(data as InnovationSlide).title}
 										description={(data as InnovationSlide).description}
+									/>
+								)}
+
+								{carouselType === "IGNITE" && (
+									<IgniteCard
+										ignite={{
+											ideaName: data.ideaName,
+											ideaDescription: data.ideaDescription,
+											submissionSource: data.submissionSource,
+											associatedChallenges: data.associatedChallenges,
+											submittedBy: data.submittedBy,
+											category: data.category,
+											sector: data.sector,
+											technologyProvider: data.technologyProvider,
+											technologyType: data.technologyType,
+											supportingFiles: data.supportingFiles,
+											status: data.status,
+											submissionDate: data.submissionDate,
+										}}
+										width={"full"}
+										key={index}
 									/>
 								)}
 							</div>

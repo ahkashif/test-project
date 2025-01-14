@@ -67,20 +67,24 @@ function Header() {
 		const token = cookies["token"];
 
 		const fetchUser = async () => {
-			const response = await axios.get("/api/users/profile");
+			try {
+				const response = await axios.get("/api/users/profile");
+				if (response.status === 200) {
+					const data = response.data.data;
 
-			if (response.status === 200) {
-				const data = response.data.data;
-
-				dispatch(
-					updateUserDetails({
-						username: data.username,
-						email: data.email,
-						profilePhoto: data.profilePhoto,
-						designation: data.designation,
-					})
-				);
-			} else if (response.status === 400) {
+					dispatch(
+						updateUserDetails({
+							username: data.username,
+							email: data.email,
+							profilePhoto: data.profilePhoto,
+							designation: data.designation,
+						})
+					);
+				} else if (response.status === 400) {
+					router.push("/login");
+				}
+			} catch (e) {
+				console.log(e);
 				router.push("/login");
 			}
 		};
@@ -174,6 +178,16 @@ function Header() {
 									: "text-foreground"
 							}`}>
 							Events
+						</Link>
+
+						<Link
+							href="/ignite"
+							className={`text-body2 py-2 px-2 flex items-center min-h-[90px] transition-colors duration-300 hover:text-green-700 dark:text-white ${
+								pathName === "/ignite"
+									? "border-b-4 border-primary-lightGreen1 font-medium text-primary-lightGreen1"
+									: "text-foreground"
+							}`}>
+							Ignite
 						</Link>
 					</nav>
 				</>

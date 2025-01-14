@@ -3,6 +3,8 @@ import counterReducer from "./slices/counterSlice";
 import pagePropertiesSlice from "./slices/pagePropertiesSlice";
 import userDetails from "./slices/userDetailsSlice";
 import pilotFormSlice from "./slices/createPilotSlice";
+import expertsDataSlice from "./slices/expertsDataSlice";
+import eventsSlice from "./slices/eventsDataSlice";
 
 export const makeStore = () => {
 	return configureStore({
@@ -11,6 +13,8 @@ export const makeStore = () => {
 			counter: counterReducer,
 			userDetails: userDetails,
 			pilotForm: pilotFormSlice,
+			experts: expertsDataSlice,
+			events: eventsSlice,
 		},
 	});
 };

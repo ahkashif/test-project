@@ -1,12 +1,33 @@
+import { IgniteTypes } from "@/app/api/common/add-ignite/route";
 import React from "react";
 
-function IgniteCard({ ...data }) {
+function IgniteCard({
+	ignite = {
+		ideaName: "",
+		ideaDescription: "",
+		submissionSource: "",
+		associatedChallenges: "",
+		submittedBy: "",
+		category: "",
+		sector: "",
+		technologyProvider: "",
+		technologyType: "",
+		supportingFiles: "",
+		status: "",
+		submissionDate: "",
+	},
+	width = "small",
+}: {
+	ignite: IgniteTypes;
+	width: string;
+}) {
+	const cardWidth = width === "full" ? "w-full" : width;
 	return (
-		<div className="border rounded-[10px] w-[31%] overflow-hidden">
+		<div className={`border rounded-[10px] ${cardWidth} overflow-hidden`}>
 			<div className="h-[275px] w-full">
 				<img
-					src={data.supportingFiles}
-					alt={data.ideaName}
+					src={ignite.supportingFiles}
+					alt={ignite.ideaName}
 					className="w-full h-full object-cover"
 				/>
 			</div>
@@ -15,14 +36,14 @@ function IgniteCard({ ...data }) {
 				<div className="flex flex-col justify-between min-h-[280px]">
 					<div className="flex flex-col gap-30">
 						<div className="flex flex-row justify-between ">
-							<div className="text-title2 font-regular">{data.submissionDate}</div>
+							<div className="text-title2 font-regular">{ignite.submissionDate}</div>
 							<div className="text-body2 font-light py-[10px] px-[15px] max-h-[28px] bg-foreground text-white rounded-full flex items-center justify-center">
 								Long Term
 							</div>
 						</div>
 						<div className="flex flex-col gap-5">
-							<h5 className="text-h5 font-semibold">{data.ideaName}</h5>
-							<p className="text-body2 font-light">{data.ideaDescription}</p>
+							<h5 className="text-h5 font-semibold">{ignite.ideaName}</h5>
+							<p className="text-body2 font-light">{ignite.ideaDescription}</p>
 						</div>
 						<div className="flex flex-row gap-15 items-center">
 							<svg

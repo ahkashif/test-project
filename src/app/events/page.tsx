@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 
 import EventsListView from "../components/events-listview/events-listview";
 import Icon from "../components/icon/icons";
+import EventBanner from "../components/event-banner/event-banner";
 
 function Events() {
 	const dispatch = useDispatch();
@@ -82,8 +83,13 @@ function Events() {
 						slidesInView={1}
 					/>
 				</div>
+
+				<div className="p-70 pif-event-banner">
+					<EventBanner />
+				</div>
+
 				<div className="">
-					<div className="w-full py-30 px-70 border-b border-divider">
+					<div className="w-full py-30 px-70 ">
 						<div className="flex flex-row items-center justify-between">
 							<div className="relative w-full">
 								<Icon

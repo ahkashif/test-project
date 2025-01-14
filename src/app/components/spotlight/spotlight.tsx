@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import FeatureCard from "./feature-card";
 import CustomButton from "../button/button";

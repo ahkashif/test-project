@@ -4,7 +4,7 @@ export async function connect() {
 	try {
 		mongoose.connect(process.env.MONGO_URI!);
 		const connection = mongoose.connection;
-
+		mongoose.connection.setMaxListeners(20);
 		connection.on("connected", () => {
 			console.log("Mongo DB Connected");
 		});
