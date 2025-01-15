@@ -21,7 +21,7 @@ function Community() {
 	const getExpertsData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
-			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
+			const DOMAIN = process.env.DOMAIN! || window.location.origin;
 			const response = await axios.get(`${DOMAIN}/api/common/get-experts`);
 			dispatch(fetchExpertsSuccess(response.data.data));
 			dispatch(setLoading({ loading: false }));
@@ -34,7 +34,7 @@ function Community() {
 	const getEventsData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
-			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
+			const DOMAIN = process.env.DOMAIN! || window.location.origin;
 			const response = await axios.get(`${DOMAIN}/api/common/get-events`);
 			dispatch(setEvents(response.data.data));
 			dispatch(setLoading({ loading: false }));

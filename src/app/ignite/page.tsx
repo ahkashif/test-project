@@ -46,7 +46,7 @@ function IgnitePage() {
 	const getIgnitesData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
-			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
+			const DOMAIN = process.env.DOMAIN! || window.location.origin;
 			const response = await axios.get(`${DOMAIN}/api/common/get-ignites`);
 			console.log(response.data.data);
 			setIgnitesData(response.data.data);

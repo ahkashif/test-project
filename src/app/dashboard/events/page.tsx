@@ -23,7 +23,7 @@ const Events = () => {
 	const getEventsData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
-			const DOMAIN = process.env.DOMAIN! || "http://localhost:3000";
+			const DOMAIN = process.env.DOMAIN! || window.location.origin;
 			const response = await axios.get(`${DOMAIN}/api/common/get-events`);
 			setCommunitiesData(response.data.data);
 			setFilteredData(response.data.data);
