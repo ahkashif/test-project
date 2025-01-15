@@ -87,7 +87,7 @@ export const SignupForm = () => {
 			}
 		} catch (error) {
 			dispatch(setLoading({ loading: false }));
-			console.log("error occured");
+			console.log("error occured", error);
 		}
 	};
 
