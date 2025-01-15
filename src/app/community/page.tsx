@@ -13,6 +13,7 @@ import CommunityOverview from "../components/community-overview/community-overvi
 import { setEvents } from "../libs/store/slices/eventsDataSlice";
 import CommunityTopics from "../components/community-topics/community-topics";
 import CommunityExperts from "../components/community-experts/community-experts";
+import GlobalLoading from "../components/atoms/loader";
 
 function Community() {
 	const dispatch = useDispatch();
@@ -51,6 +52,9 @@ function Community() {
 		<div>
 			<Header />
 			<main className="pt-90">
+				<div className="grid place-items-center">
+					<GlobalLoading />
+				</div>
 				<Banner />
 
 				<div className="tabs-area px-70 py-30">

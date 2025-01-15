@@ -8,6 +8,10 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { UploadImage } from "../../libs/server/upload";
+import { setLoading } from "../../libs/store/slices/pagePropertiesSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/libs/store/store";
+import GlobalLoading from "@/app/components/atoms/loader";
 
 interface RegistrationFormData {
 	username: string;
@@ -37,8 +41,8 @@ export const SignupForm = () => {
 	const router = useRouter();
 
 	const [profilePhotoPreview, setProfilePhotoPreview] = useState<string | null>(null);
-	const [loading, setLoading] = useState(false);
 	const [buttonDisabled, setButtonDisabled] = useState(false);
+	const isLoading = useSelector((state: RootState) => state.pageProperties.loading);
 
 	const handleProfilePhotoChange = (file: File | null) => {
 		if (file) {
@@ -56,10 +60,8 @@ export const SignupForm = () => {
 
 	// Form Submission Handler
 	const onSubmit = async (data: RegistrationFormData) => {
-		console.log("Form Submitted:", data);
-
 		try {
-			setLoading(true);
+			dispatch(setLoading({ loading: true }));
 			let profilePhotoUrl = null;
 			if (data.profilePhoto) {
 				profilePhotoUrl = await UploadImage(data.profilePhoto, "uploads");
@@ -70,12 +72,9 @@ export const SignupForm = () => {
 				profilePhoto: profilePhotoUrl,
 			};
 
-			console.log(registrationData);
-			setLoading(false);
-
 			const response = await axios.post("/api/users/signup", registrationData);
 			if (response.status === 200) {
-				console.log("User Registered", response);
+				dispatch(setLoading({ loading: false }));
 				dispatch(
 					updateUserDetails({
 						username: registrationData.username,
@@ -87,8 +86,8 @@ export const SignupForm = () => {
 				router.push("/login");
 			}
 		} catch (error) {
-			setLoading(false);
-			console.log(error);
+			dispatch(setLoading({ loading: false }));
+			console.log("error occured");
 		}
 	};
 
@@ -98,6 +97,9 @@ export const SignupForm = () => {
 
 	return (
 		<div className="">
+			<div className="grid place-items-center">
+				<GlobalLoading />
+			</div>
 			<h3 className="text-h3 font-semibold">Sign Up to Real Estate Innovation Hub</h3>
 			<form
 				onSubmit={handleSubmit(onSubmit)}
@@ -223,7 +225,7 @@ export const SignupForm = () => {
 						disabled={buttonDisabled}
 						type="submit"
 						variant="primary"
-						loading={loading}>
+						loading={isLoading}>
 						Sign Up
 					</CustomButton>
 				</div>
