@@ -5,11 +5,21 @@ import { Input } from "@/components/ui/input";
 import Icon from "../icon/icons";
 import StatCard from "./stat-card";
 import PioltCard from "../pilot-card/pilot-card";
-import { FormState } from "../../libs/store/slices/createPilotSlice";
 import ListView from "./list-view";
+import { PilotRequest } from "@/app/api/common/pilots/add-pilot/route";
+import { RootState } from "@/app/libs/store/store";
+import { useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
+import DialogComp from "../dialog-with-overlay/dialog-with-overlay";
+import PlanningToScaling from "./planning-to-scaling";
 
-function TabsComponent({ pilotsData }: { pilotsData: FormState[] }) {
+export interface PilotTypes extends PilotRequest {
+	_id: string;
+}
+
+function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 	const [view, setView] = useState("grid");
+	const [defaultTab, setDefaultTab] = useState("tech");
 	const [pilotsStagesCount, setPilotsStagesCount] = useState({
 		Planning: 0,
 		Ploting: 0,
@@ -18,12 +28,20 @@ function TabsComponent({ pilotsData }: { pilotsData: FormState[] }) {
 	});
 	const [visibleCount, setVisibleCount] = useState(3);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [filteredData, setFilteredData] = useState<FormState[]>(pilotsData);
+	const [filteredData, setFilteredData] = useState<PilotTypes[]>(pilotsData);
+	const userDetails = useSelector((state: RootState) => state.userDetails);
+	const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
+	let toastDisplayed = false;
+	const [planningPilot, setPlanningPilot] = useState(pilotsData[0]);
+
+	const closeDrawer = () => {
+		setIsRightDrawerOpen(false);
+	};
 
 	useEffect(() => {
 		if (searchQuery) {
 			// Filter based on name
-			const filtered = pilotsData.filter((pilot) => pilot.step1.name.toLowerCase().includes(searchQuery.toLowerCase()));
+			const filtered = pilotsData.filter((pilot) => pilot.pilotName.toLowerCase().includes(searchQuery.toLowerCase()));
 			setFilteredData(filtered);
 		} else {
 			// If no search query, show all pilots
@@ -34,7 +52,7 @@ function TabsComponent({ pilotsData }: { pilotsData: FormState[] }) {
 	useEffect(() => {
 		const updatedCounts = filteredData.reduce(
 			(counts, item) => {
-				const stage = item.step1.stage;
+				const stage = item.currStage || "";
 				if (stage in counts) {
 					counts[stage as keyof typeof counts] += 1;
 				}
@@ -49,7 +67,7 @@ function TabsComponent({ pilotsData }: { pilotsData: FormState[] }) {
 		if (pilotsData) {
 			const updatedCounts = pilotsData.reduce(
 				(counts, item) => {
-					const stage = item.step1.stage;
+					const stage = item.currStage || "";
 					if (stage in counts) {
 						counts[stage as keyof typeof counts] += 1;
 					}
@@ -62,13 +80,83 @@ function TabsComponent({ pilotsData }: { pilotsData: FormState[] }) {
 	}, [pilotsData]);
 
 	const handleShowMore = () => {
-		setVisibleCount((prevCount) => prevCount + 3); // Show 3 more cards
+		setVisibleCount((prevCount) => prevCount + 3);
+	};
+
+	const openTheDrawerToApprove = (pilot: any) => {
+		toast.dismiss();
+		setTimeout(() => {
+			setIsRightDrawerOpen(true);
+			setPlanningPilot(pilot);
+		}, 550);
+	};
+
+	const tabChanged = (newTab: string) => {
+		setDefaultTab((prev) => {
+			if (prev === "tech") return "pilots";
+			else return "tech";
+		});
+
+		if (newTab === "pilots") {
+			pilotsData
+				.slice()
+				.reverse()
+				.map((pilot) => {
+					if (pilot.currStage === "Planning") {
+						console.log("currStage is planning");
+
+						if (userDetails.designation === "Director" && !toastDisplayed) {
+							toast.custom(
+								(t: any) => (
+									<div
+										className={`${
+											t.visible ? "animate-enter" : "animate-leave"
+										} max-w-[330px] w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 cursor-pointer`}
+										onClick={() => {
+											openTheDrawerToApprove(pilot);
+										}}>
+										<div className="flex-1 min-w-[320px] p-30 border-b-[5px] border-status-green">
+											<div className="flex items-start flex-col gap-10">
+												<div className="flex-shrink-0 pt-0.5 flex flex-row gap-10 w-full">
+													<Icon name="check-green" />{" "}
+													<span className="text-subtitle2 text-status-green font-semibold">New Pilot Request</span>
+													<button
+														onClick={(e) => {
+															e.preventDefault();
+															e.stopPropagation();
+															toast.dismiss(t.id);
+														}}
+														className="w-fit border border-transparent rounded-none flex items-center justify-center text-body2 font-medium ml-auto">
+														<Icon
+															name="close"
+															size={22}
+														/>
+													</button>
+												</div>
+												<div className="ml-3 flex-1 relative">
+													<p className="mt-1 text-body2 text-gray-1">
+														A Technology Pilot request has been submitted and is waiting for your review.
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								),
+								{ duration: Infinity, position: "top-right", removeDelay: 100 }
+							);
+
+							toastDisplayed = true;
+						}
+					}
+				});
+		}
 	};
 
 	return (
 		<div>
 			<Tabs
-				defaultValue="tech"
+				onValueChange={tabChanged}
+				defaultValue={defaultTab}
 				className="w-full bg-white">
 				<TabsList className="w-full flex justify-start bg-white h-auto border-b border-divider px-30">
 					<TabsTrigger
@@ -160,13 +248,58 @@ function TabsComponent({ pilotsData }: { pilotsData: FormState[] }) {
 							/>
 						</div>
 
+						<div>
+							{/* for toast and drawer */}
+							<Toaster
+								toastOptions={{
+									style: {
+										animation: "slideInRight 0.5s ease-out, fadeOut 0.5s ease-out",
+									},
+								}}
+							/>
+
+							<DialogComp
+								direction="right"
+								isOpen={isRightDrawerOpen}
+								onClose={() => setIsRightDrawerOpen(false)}>
+								<div className="">
+									{planningPilot && (
+										<PlanningToScaling
+											planningPilot={planningPilot}
+											closeForm={() => closeDrawer()}
+										/>
+									)}
+								</div>
+							</DialogComp>
+						</div>
+
 						{/* Pilot Cards */}
 						{view === "grid" ? (
 							<div className="flex flex-col gap-30">
 								{filteredData.slice(0, visibleCount).map((data, index) => (
 									<PioltCard
 										key={index}
-										{...data.step1}
+										pilotName={data.pilotName}
+										description={data.description}
+										objective={data.objective}
+										location={data.location}
+										pilotBudgetCurrency={data.pilotBudgetCurrency}
+										pilotEstimatedBudget={data.pilotEstimatedBudget}
+										fundedBy={data.fundedBy}
+										technologySolution={data.technologySolution}
+										technologyProvider={data.technologyProvider || ""}
+										devCoLeadingPilot={data.devCoLeadingPilot}
+										pilotLead={data.pilotLead}
+										pilotTeam={data.pilotTeam}
+										attachments={data.attachments || ""}
+										createdDate={data.createdDate}
+										currStage={data.currStage || ""}
+										submittedBy={{
+											name: data.submittedBy.name,
+											email: data.submittedBy.email,
+											profilePhoto: data.submittedBy.profilePhoto,
+										}}
+										id={data._id}
 									/>
 								))}
 							</div>

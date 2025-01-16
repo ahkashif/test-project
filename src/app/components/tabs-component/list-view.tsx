@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { renderFullDate } from "@/app/libs/common/utils";
 import {
 	Pagination,
 	PaginationContent,
@@ -9,10 +8,10 @@ import {
 	PaginationPrevious,
 	PaginationNext,
 } from "@/components/ui/pagination";
-import { FormState } from "@/app/libs/store/slices/createPilotSlice";
 import Icon from "../icon/icons";
+import { PilotRequest } from "@/app/api/common/pilots/add-pilot/route";
 
-const ListView = ({ pilotsData }: { pilotsData: FormState[] }) => {
+const ListView = ({ pilotsData }: { pilotsData: PilotRequest[] }) => {
 	const [currentPage, setCurrentPage] = useState(1); // Current page
 	const rowsPerPage = 8; // Number of rows per page
 
@@ -51,17 +50,17 @@ const ListView = ({ pilotsData }: { pilotsData: FormState[] }) => {
 							<td className="px-[15px] py-[20px] text-body3 text-gray-3">
 								<div className="flex items-center gap-2">
 									<div className="flex flex-col gap-5">
-										<p className="text-subtitle2 font-semibold">{pilot.step1.name}</p>
+										<p className="text-subtitle2 font-semibold">{pilot.pilotName}</p>
 										<div className="flex flex-row gap-10 items-center">
 											<Image
 												src="/avatar-small-1.svg"
-												alt={pilot.step1.name}
+												alt={pilot.pilotName}
 												className="w-[22px] h-[22px] rounded-full"
 												loading="lazy"
 												width={22}
 												height={22}
 											/>
-											<p className="text-body3 text-gray-3">by {pilot.step1.owner}</p>
+											<p className="text-body3 text-gray-3">by {pilot.pilotName}</p>
 										</div>
 									</div>
 								</div>
@@ -69,24 +68,20 @@ const ListView = ({ pilotsData }: { pilotsData: FormState[] }) => {
 							<td className="px-[15px] py-[20px] text-body3">
 								<span
 									className={`px-[15px] py-5 min-w-[95px] rounded-full text-white text-body2 font-light ${
-										pilot.step1.stage === "Planning"
+										pilot.currStage === "Planning"
 											? "bg-secondary-red"
-											: pilot.step1.stage === "Ploting"
+											: pilot.currStage === "Ploting"
 											? "bg-other-cyan"
-											: pilot.step1.stage === "Assessment"
+											: pilot.currStage === "Assessment"
 											? "bg-primary-green"
 											: "bg-primary-gold"
 									}`}>
-									{pilot.step1.stage}
+									{pilot.currStage}
 								</span>
 							</td>
-							<td className="px-[15px] py-[20px] text-body3 text-gray-3">
-								{renderFullDate(pilot.step1.endDate) || "N/A"}
-							</td>
-							<td className="px-[15px] py-[20px] text-body3 text-gray-3">{pilot.step2.technologySolution || "N/A"}</td>
-							<td className="px-[15px] py-[20px] text-body3 text-gray-3">
-								{pilot.step2.technologySolutionProvider || "N/A"}
-							</td>
+							<td className="px-[15px] py-[20px] text-body3 text-gray-3">{pilot.createdDate || "N/A"}</td>
+							<td className="px-[15px] py-[20px] text-body3 text-gray-3">{pilot.technologySolution || "N/A"}</td>
+							<td className="px-[15px] py-[20px] text-body3 text-gray-3">{pilot.technologyProvider || "N/A"}</td>
 						</tr>
 					))}
 				</tbody>

@@ -1,8 +1,8 @@
 import React from "react";
-import CreateNewPilot from "./create-new-pilot";
+// import CreateNewPilot from "./create-new-pilot";
 
 function CreateNewPilotPage() {
-	return <CreateNewPilot />;
+	return <div>CreateNewPilotPage</div>;
 }
 
 export default CreateNewPilotPage;

@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 
 export async function UploadImage(image: File, folderName: string): Promise<string> {
 	try {
+		console.log(image);
 		const client = new S3Client({
 			region: process.env.REGION,
 			credentials: {

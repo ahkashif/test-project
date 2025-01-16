@@ -190,6 +190,7 @@ module.exports = {
 					lightMint: "#53ffe1",
 					cyan: "#0298AC",
 					blackShade: "#000000CC",
+					blackShade_1: "#1E1E1E",
 				},
 				dark: {
 					1: "#232323",
@@ -358,5 +359,6 @@ module.exports = {
 			});
 		},
 		require("tailwindcss-animate"),
+		require("tailwindcss-ripple")(),
 	],
 };

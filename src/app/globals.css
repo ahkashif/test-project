@@ -492,3 +492,41 @@ body {
 		background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
 	}
 }
+
+.custom-dashed-border {
+	border-left: 2px dashed #d9d9d9;
+	border-image: repeating-linear-gradient(transparent, transparent 5px, #d9d9d9 5px, #d9d9d9 10px) 1;
+}
+
+.custom-dashed-border-r {
+	border-right: 2px dashed #d9d9d9;
+	border-image: repeating-linear-gradient(transparent, transparent 5px, #d9d9d9 5px, #d9d9d9 10px) 1;
+}
+
+@keyframes slideInRight {
+	from {
+		transform: translateX(100%); /* Start off-screen */
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0); /* Slide into view */
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+.animate-enter {
+	animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-leave {
+	animation: fadeOut 0.5s ease-out forwards;
+}

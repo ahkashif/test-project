@@ -34,3 +34,19 @@ export function getRelativeTime(dateString: string): string {
 		return `just now`;
 	}
 }
+
+export function formatDate(isoDateString: string) {
+	// Create a Date object from the ISO string
+	const date = new Date(isoDateString);
+	console.log(date);
+	// Define an array of month names
+	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+	// Extract the day, month, and year
+	const day = date.getUTCDate();
+	const month = monthNames[date.getUTCMonth()];
+	const year = date.getUTCFullYear();
+
+	// Format the date as "DD MMM YYYY"
+	return `${day} ${month} ${year}`;
+}
