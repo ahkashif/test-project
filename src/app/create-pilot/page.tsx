@@ -18,6 +18,9 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import GlobalLoading from "../components/atoms/loader";
 import { setLoading } from "../libs/store/slices/pagePropertiesSlice";
+import CheckboxGroup from "../create-technology/checkbox-group";
+import { UserDetailsState } from "../libs/store/slices/userDetailsSlice";
+import { fileToBase64 } from "../libs/common/utils";
 
 // interface Milestone {
 // 	name: string;
@@ -41,16 +44,35 @@ import { setLoading } from "../libs/store/slices/pagePropertiesSlice";
 // 	milestones: Milestone[];
 // }
 
+interface FormTypesPilot extends PilotFormStateSlice {
+	fundedBy: string[];
+	associatedSector: string[];
+}
+
+const fundedByOptions = ["Public Investment Fund", "Development Company", "Technology Provider", "others"];
+
+const sectorsOptions = [
+	"Mobility",
+	"Infrastructure & Utilities",
+	"Construction",
+	"IoT",
+	"Smart cities & PropTech",
+	"Environment & Sustainability",
+	"others",
+];
+
 const STEPS = ["Enter Information", "Define Milestone"];
 
 const CreatePilotForm: React.FC = () => {
 	const formState = useSelector((state: RootState) => state.newPilotForm);
 	const dispatch = useDispatch();
 	const router = useRouter();
-	const methods = useForm<PilotFormStateSlice>({ defaultValues: formState });
+	const methods = useForm<FormTypesPilot>({ defaultValues: formState });
 	const {
 		getValues,
 		reset,
+		watch,
+		setValue,
 		formState: { errors, touchedFields },
 	} = methods;
 	const [currentStep, setCurrentStep] = useState<number>(1);
@@ -60,10 +82,14 @@ const CreatePilotForm: React.FC = () => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingIndex, setEditingIndex] = useState<number | null>(null);
+	const [users, setUsers] = useState<UserDetailsState[]>([]);
 
 	const [attm, setAttm] = useState<any>();
 	const searchParams = useSearchParams();
 	const id = searchParams.get("id") || "";
+
+	const fundedByOptionsValues = watch("fundedBy") || [];
+	const sectorsOptionsValues = watch("associatedSector") || [];
 
 	useEffect(() => {
 		if (id) {
@@ -95,6 +121,20 @@ const CreatePilotForm: React.FC = () => {
 		if (id !== "") {
 			fetchData();
 		}
+
+		const fetchUser = async () => {
+			try {
+				const response = await axios.get("/api/users/get-users");
+				if (response.status === 200) {
+					const data = response.data.data;
+					setUsers(data);
+				}
+			} catch (e) {
+				console.log(e);
+			}
+		};
+
+		fetchUser();
 	}, []);
 
 	const handleEdit = (index: number) => {
@@ -123,7 +163,6 @@ const CreatePilotForm: React.FC = () => {
 				});
 				if (response.status === 200) {
 					dispatch(setLoading({ loading: false }));
-					console.log("Pilot Edited", response);
 					router.push("/dashboard/tech-and-pilots");
 				} else {
 					dispatch(setLoading({ loading: false }));
@@ -177,20 +216,10 @@ const CreatePilotForm: React.FC = () => {
 		}
 	};
 
-	const fileToBase64 = (file: File): Promise<string> => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.readAsDataURL(file); // Converts file to Base64
-			reader.onload = () => resolve(reader.result as string);
-			reader.onerror = (error) => reject(error);
-		});
-	};
-
 	const [preview, setPreview] = useState<string | null>(null);
 
 	const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = event.target.files?.[0];
-		console.log(selectedFile);
 		setAttm(selectedFile);
 		if (selectedFile) {
 			const base64 = await fileToBase64(selectedFile);
@@ -198,6 +227,18 @@ const CreatePilotForm: React.FC = () => {
 			setPreview(URL.createObjectURL(selectedFile));
 
 			dispatch(addAttachment(base64));
+		}
+	};
+
+	const handleCheckboxChange = (key: "fundedBy" | "associatedSector", option: string) => {
+		const currentSelection = watch(key) || [];
+		if (currentSelection.includes(option)) {
+			setValue(
+				key,
+				currentSelection.filter((item: string) => item !== option)
+			);
+		} else {
+			setValue(key, [...currentSelection, option]);
 		}
 	};
 
@@ -233,227 +274,297 @@ const CreatePilotForm: React.FC = () => {
 						<div className="text-subtitle1 font-semibold ">Creating new pilot</div>
 					</header>
 					{currentStep === 1 ? (
-						<div className="overflow-y-auto p-30 flex-1 pt-[110px]">
-							<div className="w-[55%] flex flex-col gap-20">
-								<div className="flex flex-col space-y-2 relative">
-									<label
-										htmlFor="pilotName"
-										className="font-medium">
-										Pilot Name
-									</label>
-									<input
-										id="pilotName"
-										type="text"
-										{...methods.register("pilotName", { required: "Pilot name is required", maxLength: 80 })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-									/>
-
-									{errors.pilotName && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotName.message}</p>
-									)}
-								</div>
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="description"
-										className="font-medium">
-										Description
-									</label>
-									<textarea
-										id="description"
-										{...methods.register("description", { required: "Pilot description is required" })}
-										rows={4}
-										className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
-									/>
-									{errors.description && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.description.message}</p>
-									)}
-								</div>
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="objective"
-										className="font-medium">
-										Objective
-									</label>
-									<textarea
-										id="objective"
-										rows={4}
-										{...methods.register("objective", { required: "Pilot objective is required" })}
-										className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
-									/>
-
-									{errors.objective && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.objective.message}</p>
-									)}
-								</div>
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="location"
-										className="font-medium">
-										Location
-									</label>
-									<input
-										id="location"
-										type="text"
-										{...methods.register("location", { required: "location is required" })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-									/>
-									{errors.location && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.location.message}</p>
-									)}
-								</div>
-								<div className="grid grid-cols-2 gap-4">
-									<div className="flex flex-col space-y-2">
+						<div className="overflow-y-auto p-30 flex-1 pt-[110px] bg-background2">
+							<div className="border border-divider rounded-[10px] bg-white">
+								<div className="w-[55%] flex flex-col gap-20 p-30">
+									<div className="flex flex-col space-y-2 relative">
 										<label
-											htmlFor="pilotBudgetCurrency"
+											htmlFor="pilotName"
 											className="font-medium">
-											Budget Currency
-										</label>
-										<select
-											id="pilotBudgetCurrency"
-											{...methods.register("pilotBudgetCurrency", { required: "Currency is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
-											<option value="SAR">SAR</option>
-											<option value="USD">USD</option>
-										</select>
-										{errors.pilotBudgetCurrency && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-												{errors.pilotBudgetCurrency.message}
-											</p>
-										)}
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="pilotEstimatedBudget"
-											className="font-medium">
-											Estimated Budget
+											Pilot Name
 										</label>
 										<input
-											id="pilotEstimatedBudget"
-											type="number"
-											{...methods.register("pilotEstimatedBudget", { required: "Estimated Budget is required" })}
+											id="pilotName"
+											type="text"
+											{...methods.register("pilotName", { required: "Pilot name is required", maxLength: 80 })}
 											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
 										/>
-										{errors.pilotEstimatedBudget && (
+
+										{errors.pilotName && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotName.message}</p>
+										)}
+									</div>
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="description"
+											className="font-medium">
+											Description
+										</label>
+										<textarea
+											id="description"
+											{...methods.register("description", { required: "Pilot description is required" })}
+											rows={4}
+											className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
+										/>
+										{errors.description && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.description.message}</p>
+										)}
+									</div>
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="objective"
+											className="font-medium">
+											Objective
+										</label>
+										<textarea
+											id="objective"
+											rows={4}
+											{...methods.register("objective", { required: "Pilot objective is required" })}
+											className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
+										/>
+
+										{errors.objective && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.objective.message}</p>
+										)}
+									</div>
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="location"
+											className="font-medium">
+											Location
+										</label>
+										<input
+											id="location"
+											type="text"
+											{...methods.register("location", { required: "Location is required" })}
+											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light bg-no-repeat"
+											style={{
+												backgroundImage: `url('icons/icon-location.svg')`,
+												backgroundPosition: "calc(100% - 10px) center",
+												backgroundSize: "22px",
+											}}
+										/>
+										{errors.location && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.location.message}</p>
+										)}
+									</div>
+									<div className="grid grid-cols-2 gap-4">
+										<div className="flex flex-col space-y-2">
+											<label
+												htmlFor="pilotBudgetCurrency"
+												className="font-medium">
+												Budget Currency
+											</label>
+											<select
+												id="pilotBudgetCurrency"
+												{...methods.register("pilotBudgetCurrency", { required: "Currency is required" })}
+												className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
+												<option value="">Select Currency</option>
+												<option value="SAR">SAR</option>
+												<option value="USD">USD</option>
+											</select>
+											{errors.pilotBudgetCurrency && (
+												<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+													{errors.pilotBudgetCurrency.message}
+												</p>
+											)}
+										</div>
+										<div className="flex flex-col space-y-2">
+											<label
+												htmlFor="pilotEstimatedBudget"
+												className="font-medium">
+												Estimated Budget
+											</label>
+											<input
+												id="pilotEstimatedBudget"
+												type="number"
+												{...methods.register("pilotEstimatedBudget", { required: "Estimated Budget is required" })}
+												className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+											/>
+											{errors.pilotEstimatedBudget && (
+												<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+													{errors.pilotEstimatedBudget.message}
+												</p>
+											)}
+										</div>
+									</div>
+
+									<CheckboxGroup
+										options={fundedByOptions}
+										selectedOptions={fundedByOptionsValues}
+										onChange={(option) => handleCheckboxChange("fundedBy", option)}
+										label="Funded By"
+									/>
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="technologySolution"
+											className="font-medium">
+											Technology Solution
+										</label>
+										<input
+											id="technologySolution"
+											type="text"
+											{...methods.register("technologySolution", { required: "Technology Solution is required" })}
+											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+										/>
+										{errors.technologySolution && (
 											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-												{errors.pilotEstimatedBudget.message}
+												{errors.technologySolution.message}
 											</p>
 										)}
 									</div>
-								</div>
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="fundedBy"
-										className="font-medium">
-										Funded By
-									</label>
-									<select
-										id="fundedBy"
-										{...methods.register("fundedBy", { required: "This field is required" })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
-										<option value="Tech Investment Fund">Tech Investment Fund</option>
-										<option value="Development Company">Development Company</option>
-										<option value="Others">Others</option>
-									</select>
-									{errors.fundedBy && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.fundedBy.message}</p>
-									)}
-								</div>
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="technologySolution"
-										className="font-medium">
-										Technology Solution
-									</label>
-									<input
-										id="technologySolution"
-										type="text"
-										{...methods.register("technologySolution", { required: "Technology Solution is required" })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									<CheckboxGroup
+										options={sectorsOptions}
+										selectedOptions={sectorsOptionsValues}
+										onChange={(option) => handleCheckboxChange("associatedSector", option)}
+										label="Associated sector"
 									/>
-									{errors.technologySolution && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-											{errors.technologySolution.message}
-										</p>
-									)}
+
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="techProvider"
+											className="font-medium">
+											Technology Provider
+										</label>
+										<select
+											{...methods.register("technologyProvider", { required: "Technology Provider is required" })}
+											className="text-body2 text-gray-1 rounded-[10px] border border-divider px-20 py-[15px] min-w-[340px] appearance-none pr-12 bg-no-repeat"
+											style={{
+												backgroundImage: `url('icons/icon-chevron-down.svg')`,
+												backgroundPosition: "calc(100% - 12px) center",
+											}}>
+											<option value="">Select your Technology Provider</option>
+											<option value="ABC Smart Transit Solutions">ABC Smart Transit Solutions</option>
+											<option value="DEF Smart Transit Solutions">DEF Smart Transit Solutions</option>
+											<option value="GHI Smart Transit Solutions">GHI Smart Transit Solutions</option>
+											<option value="JKL Smart Transit Solutions">JKL Smart Transit Solutions</option>
+											<option value="MNO Smart Transit Solutions">MNO Smart Transit Solutions</option>
+											<option value="others">Others</option>
+										</select>
+
+										{errors.technologyProvider && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+												{errors.technologyProvider.message}
+											</p>
+										)}
+									</div>
+
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="techProvider"
+											className="font-medium">
+											DevCo leading this pilot
+										</label>
+										<select
+											{...methods.register("devCoLeadingPilot", { required: "DevCo leading this pilot is required" })}
+											className="text-body2 text-gray-1 rounded-[10px] border border-divider px-20 py-[15px] min-w-[340px] appearance-none pr-12 bg-no-repeat"
+											style={{
+												backgroundImage: `url('icons/icon-chevron-down.svg')`,
+												backgroundPosition: "calc(100% - 12px) center",
+											}}>
+											<option value="">Select your DevCo</option>
+											<option value="ABC Smart Transit Solutions">ABC Smart Transit Solutions</option>
+											<option value="DEF Smart Transit Solutions">DEF Smart Transit Solutions</option>
+											<option value="GHI Smart Transit Solutions">GHI Smart Transit Solutions</option>
+											<option value="JKL Smart Transit Solutions">JKL Smart Transit Solutions</option>
+											<option value="MNO Smart Transit Solutions">MNO Smart Transit Solutions</option>
+											<option value="others">Others</option>
+										</select>
+
+										{errors.devCoLeadingPilot && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+												{errors.devCoLeadingPilot.message}
+											</p>
+										)}
+									</div>
+
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="techProvider"
+											className="font-medium">
+											Pilot Lead
+										</label>
+										<select
+											{...methods.register("pilotLead", { required: "pilot Lead is required" })}
+											className="text-body2 text-gray-1 rounded-[10px] border border-divider px-20 py-[15px] min-w-[340px] appearance-none pr-12 bg-no-repeat"
+											style={{
+												backgroundImage: `url('icons/icon-chevron-down.svg')`,
+												backgroundPosition: "calc(100% - 12px) center",
+											}}>
+											<option value="">Select your pilot lead</option>
+											{users.map((user, index) => (
+												<option
+													key={index}
+													value={user.username}>
+													{user.username}
+												</option>
+											))}
+											<option value="others">Others</option>
+										</select>
+
+										{errors.pilotLead && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotLead.message}</p>
+										)}
+									</div>
+
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="pilotTeam"
+											className="font-medium">
+											Pilot Team
+										</label>
+										<input
+											id="pilotTeam"
+											type="text"
+											{...methods.register("pilotTeam", { required: "pilot Team is required" })}
+											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+										/>
+										{errors.pilotTeam && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotTeam.message}</p>
+										)}
+									</div>
 								</div>
 
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="devColead"
-										className="font-medium">
-										DevCo leading this pilot
-									</label>
-									<input
-										id="devColead"
-										type="text"
-										{...methods.register("devCoLeadingPilot", { required: "DevCo leading this pilot is required" })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-									/>
-									{errors.devCoLeadingPilot && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-											{errors.devCoLeadingPilot.message}
-										</p>
-									)}
-								</div>
+								<div className=" border-b border-divider border-divider-1"></div>
 
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="pilotLead"
-										className="font-medium">
-										Technology Solution
-									</label>
-									<input
-										id="pilotLead"
-										type="text"
-										{...methods.register("pilotLead", { required: "pilot Lead is required" })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-									/>
-									{errors.pilotLead && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotLead.message}</p>
-									)}
-								</div>
+								<div className="p-30">
+									<div className="flex flex-col space-y-4">
+										<label
+											htmlFor="attachments"
+											className="font-medium text-body1">
+											Attachments
+										</label>
+										<div className="border-2 border-dashed border-divider rounded-lg p-6 bg-background3 flex flex-col items-center justify-center space-y-4 relative">
+											<div className="text-center flex flex-col items-center gap-10">
+												<p className="text-subtitle2 font-semibold text-gray-1">Upload Images</p>
+												<p className="text-body3 text-gray-1">PNG, JPG and GIF files are allowed</p>
+												<Icon name="cloud-upload-1" />
+											</div>
+											<input
+												id="attachments"
+												type="file"
+												multiple
+												onChange={handleFileChange}
+												className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+											/>
+											<p className="text-body2 text-gray-1 mt-4">Drag and drop or browse to choose a file</p>
+										</div>
 
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="pilotTeam"
-										className="font-medium">
-										Technology Solution
-									</label>
-									<input
-										id="pilotTeam"
-										type="text"
-										{...methods.register("pilotTeam", { required: "pilot Team is required" })}
-										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-									/>
-									{errors.pilotTeam && (
-										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotTeam.message}</p>
-									)}
-								</div>
-								<div className="flex flex-col space-y-2">
-									<label
-										htmlFor="attachments"
-										className="font-medium">
-										Attachments
-									</label>
-									<input
-										id="attachments"
-										type="file"
-										onChange={handleFileChange}
-										className="file-input border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] min-h-[48px] text-body2 font-light"
-									/>
+										{preview && (
+											<div className="mt-4">
+												<p className="font-medium">Preview:</p>
+												<div className="border-2 border-dashed border-divider rounded-lg p-6 bg-gray-50 flex flex-col items-center justify-center space-y-4 relative">
+													<img
+														src={preview}
+														alt="Preview"
+														className="w-full max-h-[400px] object-contain rounded-lg"
+													/>
+												</div>
+											</div>
+										)}
+									</div>
 								</div>
 							</div>
-
-							{preview && (
-								<div className="mt-4">
-									<p className="font-medium">Preview:</p>
-									<img
-										src={preview}
-										alt="Preview"
-										className="w-32 h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
-									/>
-								</div>
-							)}
 						</div>
 					) : (
 						<div className="h-100 pt-[110px] overflow-y-auto p-30 flex-1 ">

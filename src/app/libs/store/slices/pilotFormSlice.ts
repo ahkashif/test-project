@@ -12,7 +12,7 @@ export interface PilotFormStateSlice {
 	location: string;
 	pilotBudgetCurrency: string;
 	pilotEstimatedBudget: number | null;
-	fundedBy: string;
+	fundedBy: string[];
 	technologySolution: string;
 	associatedSector: string[];
 	technologyProvider: string;
@@ -30,7 +30,7 @@ const initialState: PilotFormStateSlice = {
 	location: "",
 	pilotBudgetCurrency: "",
 	pilotEstimatedBudget: null,
-	fundedBy: "",
+	fundedBy: [],
 	technologySolution: "",
 	associatedSector: [],
 	technologyProvider: "",

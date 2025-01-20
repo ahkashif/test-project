@@ -19,6 +19,7 @@ import TechCard from "../tech-card/tech-card";
 import ListViewComp from "./listViewComp";
 import Image from "next/image";
 import { renderFullDate } from "@/app/libs/common/utils";
+import Link from "next/link";
 
 export interface PilotTypes extends PilotRequest {
 	_id: string;
@@ -255,6 +256,21 @@ function TabsComponent({ pilotsData, techData }: { pilotsData: PilotTypes[]; tec
 							/>
 						</div>
 						<div className="flex flex-row items-center justify-between gap-30">
+							{defaultTab === "pilots" ? (
+								<Link
+									className={`w-fit px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-subtitle1 font-semibold flex gap-10 items-center`}
+									href="/create-pilot">
+									<Icon name="plus" />
+									Create New Pilot
+								</Link>
+							) : (
+								<Link
+									className={`w-fit px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-subtitle1 font-semibold flex gap-10 items-center`}
+									href="/create-technology">
+									<Icon name="plus" />
+									Purpose new technology
+								</Link>
+							)}
 							<div className="flex flex-row rounded-full overflow-hidden border border-secondary-brown">
 								{/* View Toggle */}
 								{["grid", "list"].map((v) => (

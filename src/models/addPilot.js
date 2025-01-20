@@ -53,9 +53,9 @@ const pilotSchema = new mongoose.Schema(
 			required: true,
 		},
 		fundedBy: {
-			type: String,
+			type: [String],
 			required: true,
-			enum: ["Tech Investment Fund", "Development Company", "Others"], // Predefined options
+			default: [],
 		},
 		technologySolution: {
 			type: String,
@@ -64,7 +64,7 @@ const pilotSchema = new mongoose.Schema(
 		associatedSector: {
 			type: [String],
 			required: false,
-			default: [], // Array of sectors, e.g., Mobility, Infrastructure, etc.
+			default: [],
 		},
 		technologyProvider: {
 			type: String,

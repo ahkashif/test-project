@@ -1,7 +1,6 @@
 "use client";
 import TabsComponent, { PilotTypes } from "@/app/components/tabs-component/tabs-componet";
 import Text from "@/app/components/text/text";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 // import { initializeFormData } from "@/app/libs/store/slices/createPilotSlice";
@@ -57,12 +56,6 @@ const Pilot: React.FC = () => {
 						tagName={"h4"}
 						classes="text-h4 font-semibold"
 					/>
-
-					<Link
-						className={`w-fit px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-button font-regular`}
-						href="/create-pilot">
-						Create New Pilot
-					</Link>
 				</div>
 			</div>
 
