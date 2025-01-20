@@ -35,10 +35,9 @@ export function getRelativeTime(dateString: string): string {
 	}
 }
 
-export function formatDate(isoDateString: string) {
+export function formatDate(isoDateString: Date) {
 	// Create a Date object from the ISO string
 	const date = new Date(isoDateString);
-	console.log(date);
 	// Define an array of month names
 	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -50,3 +49,12 @@ export function formatDate(isoDateString: string) {
 	// Format the date as "DD MMM YYYY"
 	return `${day} ${month} ${year}`;
 }
+
+export const fileToBase64 = (file: File): Promise<string> => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file); // Converts file to Base64
+		reader.onload = () => resolve(reader.result as string);
+		reader.onerror = (error) => reject(error);
+	});
+};

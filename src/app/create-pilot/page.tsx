@@ -108,6 +108,7 @@ const CreatePilotForm: React.FC = () => {
 
 	const saveAndContinue = async () => {
 		const formData = getValues();
+
 		if (isEditing) {
 			try {
 				dispatch(setLoading({ loading: true }));
@@ -225,347 +226,345 @@ const CreatePilotForm: React.FC = () => {
 			</aside>
 
 			<FormProvider {...methods}>
-				<>
-					<form
-						onSubmit={methods.handleSubmit(saveAndContinue)}
-						className=" text-gray-900 dark:text-white w-[88%] flex flex-col min-h-screen relative h-[100vh]">
-						<header className="fixed h-[80px] flex flex-col min-h-[80px] w-full border-b border-divider bg-white z-10 p-30">
-							<div className="text-subtitle1 font-semibold ">Creating new pilot</div>
-						</header>
-						{currentStep === 1 ? (
-							<div className="overflow-y-auto p-30 flex-1 pt-[110px]">
-								<div className="w-[55%] flex flex-col gap-20">
-									<div className="flex flex-col space-y-2 relative">
-										<label
-											htmlFor="pilotName"
-											className="font-medium">
-											Pilot Name
-										</label>
-										<input
-											id="pilotName"
-											type="text"
-											{...methods.register("pilotName", { required: "Pilot name is required", maxLength: 80 })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-										/>
+				<form
+					onSubmit={methods.handleSubmit(saveAndContinue)}
+					className=" text-gray-900 dark:text-white w-[88%] flex flex-col min-h-screen relative h-[100vh]">
+					<header className="fixed h-[80px] flex flex-col min-h-[80px] w-full border-b border-divider bg-white z-10 p-30">
+						<div className="text-subtitle1 font-semibold ">Creating new pilot</div>
+					</header>
+					{currentStep === 1 ? (
+						<div className="overflow-y-auto p-30 flex-1 pt-[110px]">
+							<div className="w-[55%] flex flex-col gap-20">
+								<div className="flex flex-col space-y-2 relative">
+									<label
+										htmlFor="pilotName"
+										className="font-medium">
+										Pilot Name
+									</label>
+									<input
+										id="pilotName"
+										type="text"
+										{...methods.register("pilotName", { required: "Pilot name is required", maxLength: 80 })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									/>
 
-										{errors.pilotName && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotName.message}</p>
-										)}
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="description"
-											className="font-medium">
-											Description
-										</label>
-										<textarea
-											id="description"
-											{...methods.register("description", { required: "Pilot description is required" })}
-											rows={4}
-											className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
-										/>
-										{errors.description && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.description.message}</p>
-										)}
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="objective"
-											className="font-medium">
-											Objective
-										</label>
-										<textarea
-											id="objective"
-											rows={4}
-											{...methods.register("objective", { required: "Pilot objective is required" })}
-											className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
-										/>
-
-										{errors.objective && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.objective.message}</p>
-										)}
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="location"
-											className="font-medium">
-											Location
-										</label>
-										<input
-											id="location"
-											type="text"
-											{...methods.register("location", { required: "location is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-										/>
-										{errors.location && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.location.message}</p>
-										)}
-									</div>
-									<div className="grid grid-cols-2 gap-4">
-										<div className="flex flex-col space-y-2">
-											<label
-												htmlFor="pilotBudgetCurrency"
-												className="font-medium">
-												Budget Currency
-											</label>
-											<select
-												id="pilotBudgetCurrency"
-												{...methods.register("pilotBudgetCurrency", { required: "Currency is required" })}
-												className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
-												<option value="SAR">SAR</option>
-												<option value="USD">USD</option>
-											</select>
-											{errors.pilotBudgetCurrency && (
-												<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-													{errors.pilotBudgetCurrency.message}
-												</p>
-											)}
-										</div>
-										<div className="flex flex-col space-y-2">
-											<label
-												htmlFor="pilotEstimatedBudget"
-												className="font-medium">
-												Estimated Budget
-											</label>
-											<input
-												id="pilotEstimatedBudget"
-												type="number"
-												{...methods.register("pilotEstimatedBudget", { required: "Estimated Budget is required" })}
-												className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-											/>
-											{errors.pilotEstimatedBudget && (
-												<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-													{errors.pilotEstimatedBudget.message}
-												</p>
-											)}
-										</div>
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="fundedBy"
-											className="font-medium">
-											Funded By
-										</label>
-										<select
-											id="fundedBy"
-											{...methods.register("fundedBy", { required: "This field is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
-											<option value="Tech Investment Fund">Tech Investment Fund</option>
-											<option value="Development Company">Development Company</option>
-											<option value="Others">Others</option>
-										</select>
-										{errors.fundedBy && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.fundedBy.message}</p>
-										)}
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="technologySolution"
-											className="font-medium">
-											Technology Solution
-										</label>
-										<input
-											id="technologySolution"
-											type="text"
-											{...methods.register("technologySolution", { required: "Technology Solution is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-										/>
-										{errors.technologySolution && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-												{errors.technologySolution.message}
-											</p>
-										)}
-									</div>
-
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="devColead"
-											className="font-medium">
-											DevCo leading this pilot
-										</label>
-										<input
-											id="devColead"
-											type="text"
-											{...methods.register("devCoLeadingPilot", { required: "DevCo leading this pilot is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-										/>
-										{errors.devCoLeadingPilot && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
-												{errors.devCoLeadingPilot.message}
-											</p>
-										)}
-									</div>
-
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="pilotLead"
-											className="font-medium">
-											Technology Solution
-										</label>
-										<input
-											id="pilotLead"
-											type="text"
-											{...methods.register("pilotLead", { required: "pilot Lead is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-										/>
-										{errors.pilotLead && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotLead.message}</p>
-										)}
-									</div>
-
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="pilotTeam"
-											className="font-medium">
-											Technology Solution
-										</label>
-										<input
-											id="pilotTeam"
-											type="text"
-											{...methods.register("pilotTeam", { required: "pilot Team is required" })}
-											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
-										/>
-										{errors.pilotTeam && (
-											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotTeam.message}</p>
-										)}
-									</div>
-									<div className="flex flex-col space-y-2">
-										<label
-											htmlFor="attachments"
-											className="font-medium">
-											Attachments
-										</label>
-										<input
-											id="attachments"
-											type="file"
-											onChange={handleFileChange}
-											className="file-input border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] min-h-[48px] text-body2 font-light"
-										/>
-									</div>
-								</div>
-
-								{preview && (
-									<div className="mt-4">
-										<p className="font-medium">Preview:</p>
-										<img
-											src={preview}
-											alt="Preview"
-											className="w-32 h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
-										/>
-									</div>
-								)}
-							</div>
-						) : (
-							<div className="h-100 pt-[110px] overflow-y-auto p-30 flex-1 ">
-								<div className="flex flex-col gap-20">
-									<TimelineGraph />
-									<div></div>
-									<div className="overflow-x-auto w-full rounded-[10px] border border-divider">
-										<table className="min-w-full bg-white">
-											<thead className="bg-gray-7 border-b border-divider rounded-[10px] overflow-hidden">
-												<tr>
-													<th className="text-left p-[15px] text-body3 text-gray-3">Milestone</th>
-													<th className="text-left p-[15px] text-body3 text-gray-3">Expected Date</th>
-													<th className="text-left p-[15px] text-body3 text-gray-3">Actions</th>
-												</tr>
-											</thead>
-											<tbody>
-												{milestones?.length > 0 &&
-													milestones.map((milestone: any, index: number) => (
-														<tr
-															key={index}
-															className="border-b border-b-divider">
-															<td className="px-[15px] py-[20px] text-body2 text-gray-1">{milestone.name}</td>
-															<td className="px-[15px] py-[20px] text-body2 text-gray-1">{milestone.date}</td>
-															<td className="px-[15px] py-[20px] text-body2 text-gray-1">
-																<div className="flex flex-row gap-30">
-																	<button
-																		onClick={() => handleEdit(index)}
-																		className="text-body2 flex gap-10">
-																		<Icon
-																			name="edit"
-																			size={20}
-																		/>
-																		Edit
-																	</button>
-																	<button
-																		onClick={() => handleDelete(index)}
-																		className="text-body2 flex gap-10">
-																		<Icon
-																			name="delete"
-																			size={20}
-																		/>
-																		Delete
-																	</button>
-																</div>
-															</td>
-														</tr>
-													))}
-											</tbody>
-										</table>
-									</div>
-									<button
-										onClick={() => {
-											setEditingIndex(null);
-											setIsModalOpen(true);
-										}}
-										type="button"
-										className="px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-button font-regular w-fit ">
-										Add Milestone
-									</button>
-									{isModalOpen && (
-										<MilestoneModal
-											isOpen={isModalOpen}
-											onClose={() => setIsModalOpen(false)}
-											index={editingIndex ?? undefined}
-											defaultValues={editingIndex !== null ? milestones[editingIndex] : undefined}
-										/>
+									{errors.pilotName && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotName.message}</p>
 									)}
 								</div>
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="description"
+										className="font-medium">
+										Description
+									</label>
+									<textarea
+										id="description"
+										{...methods.register("description", { required: "Pilot description is required" })}
+										rows={4}
+										className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
+									/>
+									{errors.description && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.description.message}</p>
+									)}
+								</div>
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="objective"
+										className="font-medium">
+										Objective
+									</label>
+									<textarea
+										id="objective"
+										rows={4}
+										{...methods.register("objective", { required: "Pilot objective is required" })}
+										className="textarea border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] focus:ring-blue-500 focus:outline-none text-body2 font-light"
+									/>
+
+									{errors.objective && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.objective.message}</p>
+									)}
+								</div>
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="location"
+										className="font-medium">
+										Location
+									</label>
+									<input
+										id="location"
+										type="text"
+										{...methods.register("location", { required: "location is required" })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									/>
+									{errors.location && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.location.message}</p>
+									)}
+								</div>
+								<div className="grid grid-cols-2 gap-4">
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="pilotBudgetCurrency"
+											className="font-medium">
+											Budget Currency
+										</label>
+										<select
+											id="pilotBudgetCurrency"
+											{...methods.register("pilotBudgetCurrency", { required: "Currency is required" })}
+											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
+											<option value="SAR">SAR</option>
+											<option value="USD">USD</option>
+										</select>
+										{errors.pilotBudgetCurrency && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+												{errors.pilotBudgetCurrency.message}
+											</p>
+										)}
+									</div>
+									<div className="flex flex-col space-y-2">
+										<label
+											htmlFor="pilotEstimatedBudget"
+											className="font-medium">
+											Estimated Budget
+										</label>
+										<input
+											id="pilotEstimatedBudget"
+											type="number"
+											{...methods.register("pilotEstimatedBudget", { required: "Estimated Budget is required" })}
+											className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+										/>
+										{errors.pilotEstimatedBudget && (
+											<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+												{errors.pilotEstimatedBudget.message}
+											</p>
+										)}
+									</div>
+								</div>
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="fundedBy"
+										className="font-medium">
+										Funded By
+									</label>
+									<select
+										id="fundedBy"
+										{...methods.register("fundedBy", { required: "This field is required" })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light">
+										<option value="Tech Investment Fund">Tech Investment Fund</option>
+										<option value="Development Company">Development Company</option>
+										<option value="Others">Others</option>
+									</select>
+									{errors.fundedBy && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.fundedBy.message}</p>
+									)}
+								</div>
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="technologySolution"
+										className="font-medium">
+										Technology Solution
+									</label>
+									<input
+										id="technologySolution"
+										type="text"
+										{...methods.register("technologySolution", { required: "Technology Solution is required" })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									/>
+									{errors.technologySolution && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+											{errors.technologySolution.message}
+										</p>
+									)}
+								</div>
+
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="devColead"
+										className="font-medium">
+										DevCo leading this pilot
+									</label>
+									<input
+										id="devColead"
+										type="text"
+										{...methods.register("devCoLeadingPilot", { required: "DevCo leading this pilot is required" })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									/>
+									{errors.devCoLeadingPilot && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">
+											{errors.devCoLeadingPilot.message}
+										</p>
+									)}
+								</div>
+
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="pilotLead"
+										className="font-medium">
+										Technology Solution
+									</label>
+									<input
+										id="pilotLead"
+										type="text"
+										{...methods.register("pilotLead", { required: "pilot Lead is required" })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									/>
+									{errors.pilotLead && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotLead.message}</p>
+									)}
+								</div>
+
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="pilotTeam"
+										className="font-medium">
+										Technology Solution
+									</label>
+									<input
+										id="pilotTeam"
+										type="text"
+										{...methods.register("pilotTeam", { required: "pilot Team is required" })}
+										className="w-full border border-divider rounded-[10px] p-[15px] min-h-[48px] text-body2 font-light"
+									/>
+									{errors.pilotTeam && (
+										<p className="text-red-500 text-subtitle2 font-light mt-[5px]">{errors.pilotTeam.message}</p>
+									)}
+								</div>
+								<div className="flex flex-col space-y-2">
+									<label
+										htmlFor="attachments"
+										className="font-medium">
+										Attachments
+									</label>
+									<input
+										id="attachments"
+										type="file"
+										onChange={handleFileChange}
+										className="file-input border border-gray-300 dark:border-gray-600 p-2 rounded-[10px] min-h-[48px] text-body2 font-light"
+									/>
+								</div>
 							</div>
-						)}
 
-						<footer className="flex flex-row justify-between px-30 py-20 border-t border-divider">
-							<div className="flex flex-row gap-20">
-								{currentStep > 1 && (
-									<button
-										aria-label="Go back to previous step"
-										className={`px-20 py-[13px] border border-secondary-brown text-secondary-brown rounded-full text-button font-regular flex gap-10 items-center transition-all duration-300 ease-in-out transform hover:scale-105`}
-										type="button"
-										onClick={() => {
-											setCurrentStep((prevState) => prevState - 1);
-										}}>
-										Back
-									</button>
-								)}
-
+							{preview && (
+								<div className="mt-4">
+									<p className="font-medium">Preview:</p>
+									<img
+										src={preview}
+										alt="Preview"
+										className="w-32 h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+									/>
+								</div>
+							)}
+						</div>
+					) : (
+						<div className="h-100 pt-[110px] overflow-y-auto p-30 flex-1 ">
+							<div className="flex flex-col gap-20">
+								<TimelineGraph />
+								<div></div>
+								<div className="overflow-x-auto w-full rounded-[10px] border border-divider">
+									<table className="min-w-full bg-white">
+										<thead className="bg-gray-7 border-b border-divider rounded-[10px] overflow-hidden">
+											<tr>
+												<th className="text-left p-[15px] text-body3 text-gray-3">Milestone</th>
+												<th className="text-left p-[15px] text-body3 text-gray-3">Expected Date</th>
+												<th className="text-left p-[15px] text-body3 text-gray-3">Actions</th>
+											</tr>
+										</thead>
+										<tbody>
+											{milestones?.length > 0 &&
+												milestones.map((milestone: any, index: number) => (
+													<tr
+														key={index}
+														className="border-b border-b-divider">
+														<td className="px-[15px] py-[20px] text-body2 text-gray-1">{milestone.name}</td>
+														<td className="px-[15px] py-[20px] text-body2 text-gray-1">{milestone.date}</td>
+														<td className="px-[15px] py-[20px] text-body2 text-gray-1">
+															<div className="flex flex-row gap-30">
+																<button
+																	onClick={() => handleEdit(index)}
+																	className="text-body2 flex gap-10">
+																	<Icon
+																		name="edit"
+																		size={20}
+																	/>
+																	Edit
+																</button>
+																<button
+																	onClick={() => handleDelete(index)}
+																	className="text-body2 flex gap-10">
+																	<Icon
+																		name="delete"
+																		size={20}
+																	/>
+																	Delete
+																</button>
+															</div>
+														</td>
+													</tr>
+												))}
+										</tbody>
+									</table>
+								</div>
 								<button
+									onClick={() => {
+										setEditingIndex(null);
+										setIsModalOpen(true);
+									}}
 									type="button"
-									className={`px-20 py-[13px] border border-secondary-brown text-secondary-brown rounded-full text-button font-regular flex gap-10 items-center`}>
-									Cancel
+									className="px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-button font-regular w-fit ">
+									Add Milestone
 								</button>
-							</div>
-							<div className="flex flex-row gap-20">
-								<button
-									className={`px-20 py-[13px] border border-secondary-brown text-secondary-brown rounded-full text-button font-regular flex gap-10 items-center`}
-									type="button"
-									onClick={handleForm}>
-									Save & Continue
-								</button>
-
-								{currentStep === 2 ? (
-									<button
-										type="submit"
-										className={`px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-button font-regular`}>
-										Submit
-									</button>
-								) : (
-									""
+								{isModalOpen && (
+									<MilestoneModal
+										isOpen={isModalOpen}
+										onClose={() => setIsModalOpen(false)}
+										index={editingIndex ?? undefined}
+										defaultValues={editingIndex !== null ? milestones[editingIndex] : undefined}
+									/>
 								)}
 							</div>
-						</footer>
-					</form>
-				</>
+						</div>
+					)}
+
+					<footer className="flex flex-row justify-between px-30 py-20 border-t border-divider">
+						<div className="flex flex-row gap-20">
+							{currentStep > 1 && (
+								<button
+									aria-label="Go back to previous step"
+									className={`px-20 py-[13px] border border-secondary-brown text-secondary-brown rounded-full text-button font-regular flex gap-10 items-center transition-all duration-300 ease-in-out transform hover:scale-105`}
+									type="button"
+									onClick={() => {
+										setCurrentStep((prevState) => prevState - 1);
+									}}>
+									Back
+								</button>
+							)}
+
+							<button
+								type="button"
+								className={`px-20 py-[13px] border border-secondary-brown text-secondary-brown rounded-full text-button font-regular flex gap-10 items-center`}>
+								Cancel
+							</button>
+						</div>
+						<div className="flex flex-row gap-20">
+							<button
+								className={`px-20 py-[13px] border border-secondary-brown text-secondary-brown rounded-full text-button font-regular flex gap-10 items-center`}
+								type="button"
+								onClick={handleForm}>
+								Save & Continue
+							</button>
+
+							{currentStep === 2 ? (
+								<button
+									type="submit"
+									className={`px-20 py-[13px] border border-secondary-brown bg-secondary-brown text-white rounded-full text-button font-regular`}>
+									Submit
+								</button>
+							) : (
+								""
+							)}
+						</div>
+					</footer>
+				</form>
 			</FormProvider>
 		</div>
 	);

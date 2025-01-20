@@ -72,7 +72,7 @@ export const SignupForm = () => {
 				profilePhoto: profilePhotoUrl,
 			};
 
-			const response = await axios.post("/api/users/signup", registrationData);
+			const response = await axios.post("/api/common/signup", registrationData);
 			if (response.status === 200) {
 				dispatch(setLoading({ loading: false }));
 				dispatch(
@@ -137,15 +137,17 @@ export const SignupForm = () => {
 				{/* Designation */}
 				<div>
 					<label className="text-body2 text-gray-1 font-light mb-1 dark:text-white">Designation</label>
-					{/* <select
+					<select
 						{...register("designation", { required: "Designation is required" })}
 						className="text-body2 text-gray-1 rounded-[10px] border border-divider px-20 py-[15px] min-w-[340px]">
 						<option value="">Select your designation</option>
-						<option value="Developer">Developer</option>
-						<option value="Designer">Designer</option>
-						<option value="Manager">Manager</option>
-						<option value="Other">Other</option>
-					</select> */}
+						<option value="innovation-leardership">Innovation Leardership(IL)</option>
+						<option value="senior-lead">Senior Lead</option>
+						<option value="pilot-lead">Pilot Lead(PL)</option>
+						<option value="DevCo-innovation-champion">DevCo Innovation Champion(DCo)</option>
+						<option value="community-member">Community Member</option>
+						<option value="others">Others</option>
+					</select>
 
 					<input
 						type="test"

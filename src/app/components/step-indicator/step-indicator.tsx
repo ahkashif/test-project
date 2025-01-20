@@ -16,15 +16,14 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep }) => 
 				return (
 					<div
 						key={index}
-						className="flex items-center gap-10 text-sm">
-						{/* Circle Indicator */}
+						className="flex items-center gap-10 text-body2">
 						<div
 							className={`flex items-center justify-center w-[34px] h-[34px] rounded-full text-center font-light text-body1 ${
 								isActive
-									? "border border-black text-black"
+									? "border border-secondary-brown text-secondary-brown"
 									: isCompleted
-									? "bg-status-green text-white"
-									: "border-2 border-gray-300 text-gray-400"
+									? "bg-black text-white"
+									: "border-2 border-divider text-disable"
 							}`}>
 							{isCompleted ? (
 								<svg
@@ -46,7 +45,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep }) => 
 						{/* Step Label */}
 						<span
 							className={`font-semibold text-subtitle2 ${
-								isActive ? "text-black" : isCompleted ? "text-black" : "text-gray-400"
+								isActive ? "text-secondary-brown" : isCompleted ? "text-black" : "text-disable"
 							}`}>
 							{step}
 						</span>

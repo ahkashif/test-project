@@ -6,8 +6,9 @@ import userDetails from "./slices/userDetailsSlice";
 import expertsDataSlice from "./slices/expertsDataSlice";
 import eventsSlice from "./slices/eventsDataSlice";
 import newPilotFormSlice from "./slices/pilotFormSlice";
+import techFormSlice from "./slices/techFormSlice";
 
-export const makeStore = () => {
+export const store = () => {
 	return configureStore({
 		reducer: {
 			pageProperties: pagePropertiesSlice,
@@ -16,6 +17,7 @@ export const makeStore = () => {
 			experts: expertsDataSlice,
 			events: eventsSlice,
 			newPilotForm: newPilotFormSlice,
+			techFormSlice: techFormSlice,
 		},
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware({
@@ -28,6 +30,6 @@ export const makeStore = () => {
 	});
 };
 
-export type AppStore = ReturnType<typeof makeStore>;
+export type AppStore = ReturnType<typeof store>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];

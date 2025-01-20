@@ -10,16 +10,29 @@ import { setLoading } from "../../libs/store/slices/pagePropertiesSlice";
 import GlobalLoading from "@/app/components/atoms/loader";
 
 const Pilot: React.FC = () => {
-	const [pilotsData, setPilotsData] = useState<PilotTypes[]>([]);
 	const dispatch = useDispatch();
+	const [pilotsData, setPilotsData] = useState<PilotTypes[]>([]);
+	const [techData, setTechData] = useState([]);
 
 	const getPilotsData = async () => {
 		try {
 			dispatch(setLoading({ loading: true }));
 			const DOMAIN = process.env.DOMAIN! || window.location.origin;
 			const response = await axios.get(`${DOMAIN}/api/common/pilots/get-pilots`);
-			// dispatch(initializeFormData(response.data.data));
 			setPilotsData(response.data.data);
+			dispatch(setLoading({ loading: false }));
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			dispatch(setLoading({ loading: false }));
+		}
+	};
+
+	const getTechnologies = async () => {
+		try {
+			dispatch(setLoading({ loading: true }));
+			const DOMAIN = process.env.DOMAIN! || window.location.origin;
+			const response = await axios.get(`${DOMAIN}/api/common/technologies/get-all`);
+			setTechData(response.data.data);
 			dispatch(setLoading({ loading: false }));
 		} catch (error) {
 			console.error("Error fetching data:", error);
@@ -29,6 +42,7 @@ const Pilot: React.FC = () => {
 
 	useEffect(() => {
 		getPilotsData();
+		getTechnologies();
 	}, []);
 
 	return (
@@ -52,7 +66,14 @@ const Pilot: React.FC = () => {
 				</div>
 			</div>
 
-			{pilotsData ? <TabsComponent pilotsData={pilotsData} /> : <div>No Data Found</div>}
+			{pilotsData ? (
+				<TabsComponent
+					pilotsData={pilotsData}
+					techData={techData}
+				/>
+			) : (
+				<div>No Data Found</div>
+			)}
 		</div>
 	);
 };

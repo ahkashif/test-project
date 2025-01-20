@@ -183,6 +183,8 @@ module.exports = {
 					teal: "#015a66",
 					DEFAULT: "hsl(var(--secondary))",
 					foreground: "hsl(var(--secondary-foreground))",
+					blue1: "#8204AC",
+					darkblue: "#472BD0",
 				},
 				other: {
 					darkGreen: "#00352b",
@@ -232,6 +234,7 @@ module.exports = {
 				background2: "#FBFBFB",
 				background3: "#FFD3991A",
 				background4: "#DFECEA80",
+
 				card: {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",

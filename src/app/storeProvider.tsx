@@ -2,10 +2,10 @@
 "use client";
 
 import { Provider } from "react-redux";
-import { makeStore } from "./libs/store/store";
+import { store } from "./libs/store/store";
 
-const store = makeStore();
+const makeStore = store();
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
-	return <Provider store={store}>{children}</Provider>;
+	return <Provider store={makeStore}>{children}</Provider>;
 }

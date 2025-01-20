@@ -13,7 +13,7 @@ function StatCard({ name, iconName, count, width, color }: StatCardProps) {
 	return (
 		<div
 			className={`px-30 py-20 rounded-[10px] border border-divider min-w-[120px] flex flex-col items-start gap-30`}
-			style={{ width: width, color: color }}>
+			style={{ width: width }}>
 			<div className="flex flex-row justify-between min-w-[205px] w-full">
 				<p className="text-title2">{name}</p>
 				<Icon

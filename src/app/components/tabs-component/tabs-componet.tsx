@@ -5,19 +5,30 @@ import { Input } from "@/components/ui/input";
 import Icon from "../icon/icons";
 import StatCard from "./stat-card";
 import PioltCard from "../pilot-card/pilot-card";
-import ListView from "./list-view";
+// import ListView from "./list-view";
 import { PilotRequest } from "@/app/api/common/pilots/add-pilot/route";
 import { RootState } from "@/app/libs/store/store";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import DialogComp from "../dialog-with-overlay/dialog-with-overlay";
-import PlanningToScaling from "./planning-to-scaling";
+// import PlanningToDev from "./planning-to-dev";
+import DevToPlotting from "./dev-to-plotting";
+// import ToastNotification from "../toast-notification/toast-notification";
+import { TechFormTypesSlice } from "@/app/libs/store/slices/techFormSlice";
+import TechCard from "../tech-card/tech-card";
+import ListViewComp from "./listViewComp";
+import Image from "next/image";
+import { renderFullDate } from "@/app/libs/common/utils";
 
 export interface PilotTypes extends PilotRequest {
 	_id: string;
 }
 
-function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
+export interface TechTypes extends TechFormTypesSlice {
+	_id: string;
+}
+
+function TabsComponent({ pilotsData, techData }: { pilotsData: PilotTypes[]; techData: TechTypes[] }) {
 	const [view, setView] = useState("grid");
 	const [defaultTab, setDefaultTab] = useState("tech");
 	const [pilotsStagesCount, setPilotsStagesCount] = useState({
@@ -26,9 +37,17 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 		Assessment: 0,
 		Scaling: 0,
 	});
+
+	const [techStagesCount, setTechStagesCount] = useState({
+		Screening: 0,
+		Scouting: 0,
+		Engagement: 0,
+	});
+
 	const [visibleCount, setVisibleCount] = useState(3);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filteredData, setFilteredData] = useState<PilotTypes[]>(pilotsData);
+	const [filteredTechData, setFilteredTechData] = useState<TechTypes[]>(techData);
 	const userDetails = useSelector((state: RootState) => state.userDetails);
 	const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
 	let toastDisplayed = false;
@@ -40,14 +59,21 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 
 	useEffect(() => {
 		if (searchQuery) {
-			// Filter based on name
-			const filtered = pilotsData.filter((pilot) => pilot.pilotName.toLowerCase().includes(searchQuery.toLowerCase()));
-			setFilteredData(filtered);
+			let filtered;
+			if (defaultTab === "pilots") {
+				filtered = pilotsData.filter((pilot) => pilot.pilotName.toLowerCase().includes(searchQuery.toLowerCase()));
+				setFilteredData(filtered);
+			} else {
+				filtered = techData.filter((tech) => tech.techName.toLowerCase().includes(searchQuery.toLowerCase()));
+				setFilteredTechData(filtered);
+				console.log(filtered);
+			}
 		} else {
 			// If no search query, show all pilots
 			setFilteredData(pilotsData);
+			setFilteredTechData(techData);
 		}
-	}, [searchQuery, pilotsData]);
+	}, [searchQuery, pilotsData, techData]);
 
 	useEffect(() => {
 		const updatedCounts = filteredData.reduce(
@@ -62,6 +88,20 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 		);
 		setPilotsStagesCount(updatedCounts);
 	}, [filteredData]);
+
+	useEffect(() => {
+		const updatedCounts = filteredTechData.reduce(
+			(counts, item) => {
+				const stage = item.currentStage || "";
+				if (stage in counts) {
+					counts[stage as keyof typeof counts] += 1;
+				}
+				return counts;
+			},
+			{ Screening: 0, Scouting: 0, Engagement: 0 }
+		);
+		setTechStagesCount(updatedCounts);
+	}, [filteredTechData]);
 
 	useEffect(() => {
 		if (pilotsData) {
@@ -79,6 +119,22 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 		}
 	}, [pilotsData]);
 
+	useEffect(() => {
+		if (techData) {
+			const updatedCounts = techData.reduce(
+				(counts, item) => {
+					const stage = item.currentStage || "";
+					if (stage in counts) {
+						counts[stage as keyof typeof counts] += 1;
+					}
+					return counts;
+				},
+				{ Screening: 0, Scouting: 0, Engagement: 0 }
+			);
+			setTechStagesCount(updatedCounts);
+		}
+	}, [techData]);
+
 	const handleShowMore = () => {
 		setVisibleCount((prevCount) => prevCount + 3);
 	};
@@ -92,6 +148,7 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 	};
 
 	const tabChanged = (newTab: string) => {
+		setSearchQuery("");
 		setDefaultTab((prev) => {
 			if (prev === "tech") return "pilots";
 			else return "tech";
@@ -102,9 +159,7 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 				.slice()
 				.reverse()
 				.map((pilot) => {
-					if (pilot.currStage === "Planning") {
-						console.log("currStage is planning");
-
+					if (pilot.currStage === "Planning_1") {
 						if (userDetails.designation === "Director" && !toastDisplayed) {
 							toast.custom(
 								(t: any) => (
@@ -141,6 +196,14 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 											</div>
 										</div>
 									</div>
+									// <ToastNotification
+									// 	pilot={undefined}
+									// 	onApprove={function (pilot: any): void {
+									// 		throw new Error("Function not implemented.");
+									// 	}}
+									// 	message={""}
+									// 	title={""}
+									// />
 								),
 								{ duration: Infinity, position: "top-right", removeDelay: 100 }
 							);
@@ -162,7 +225,7 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 					<TabsTrigger
 						value="tech"
 						className="p-10 min-w-[220px] min-h-[60px] text-subtitle1 text-black data-[state=active]:border-b-[5px] data-[state=active]:border-secondary-brown data-[state=active]:bg-background3">
-						Technologies (<span className="text-inherit">20</span>)
+						Technologies (<span className="text-inherit">{techData.length}</span>)
 					</TabsTrigger>
 					<TabsTrigger
 						value="pilots"
@@ -183,6 +246,7 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 								placeholder="Search"
 								className="min-w-[350px] min-h-[50px] px-60 py-10"
 								onChange={(e) => setSearchQuery(e.target.value)}
+								value={searchQuery}
 							/>
 							<Icon
 								name="filter-ai"
@@ -264,7 +328,7 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 								onClose={() => setIsRightDrawerOpen(false)}>
 								<div className="">
 									{planningPilot && (
-										<PlanningToScaling
+										<DevToPlotting
 											planningPilot={planningPilot}
 											closeForm={() => closeDrawer()}
 										/>
@@ -305,7 +369,64 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 							</div>
 						) : (
 							<div className="flex flex-row w-full">
-								<ListView pilotsData={filteredData} />
+								{/* <ListView pilotsData={filteredData} /> */}
+								<ListViewComp
+									data={pilotsData}
+									headers={[
+										"Pilot ID",
+										"Pilot Name",
+										"Pilot Stage",
+										"Completion Date",
+										"Pilot Contributors",
+										"Comp./Tech. Provider",
+									]}
+									renderRow={(pilot, index) => (
+										<tr
+											key={index}
+											className="border-b border-b-divider">
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">{"897"}</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">
+												<div className="flex items-center gap-2">
+													<div className="flex flex-col gap-5">
+														<p className="text-subtitle2 font-semibold">{pilot.pilotName}</p>
+														<div className="flex flex-row gap-10 items-center">
+															<Image
+																src="/avatar-small-1.svg"
+																alt={pilot.pilotName}
+																className="w-[22px] h-[22px] rounded-full"
+																loading="lazy"
+																width={22}
+																height={22}
+															/>
+															<p className="text-body3 text-gray-3">by {pilot.pilotName}</p>
+														</div>
+													</div>
+												</div>
+											</td>
+											<td className="px-[15px] py-[20px] text-body3">
+												<span
+													className={`px-[15px] py-5 min-w-[95px] rounded-full text-white text-body2 font-light ${
+														pilot.currStage === "Planning"
+															? "bg-secondary-red"
+															: pilot.currStage === "Ploting"
+															? "bg-other-cyan"
+															: pilot.currStage === "Assessment"
+															? "bg-primary-green"
+															: "bg-primary-gold"
+													}`}>
+													{pilot.currStage}
+												</span>
+											</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">{pilot.createdDate || "N/A"}</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">
+												{pilot.technologySolution || "N/A"}
+											</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">
+												{pilot.technologyProvider || "N/A"}
+											</td>
+										</tr>
+									)}
+								/>
 							</div>
 						)}
 
@@ -324,7 +445,99 @@ function TabsComponent({ pilotsData }: { pilotsData: PilotTypes[] }) {
 				<TabsContent
 					className="p-30"
 					value="tech">
-					Change your password here.
+					<div className="flex flex-col gap-20">
+						<div className="flex flex-row gap-20 bg-white w-full">
+							<StatCard
+								name={"Screening"}
+								iconName={"search"}
+								count={techStagesCount.Screening}
+								width={"33%"}
+								color={"secondary-brown"}
+							/>
+							<StatCard
+								name={"Scouting"}
+								iconName={"show"}
+								count={techStagesCount.Scouting}
+								width={"33%"}
+								color={"secondary-blue1"}
+							/>
+							<StatCard
+								name={"Engagement"}
+								iconName={"community-1"}
+								count={techStagesCount.Engagement}
+								width={"33%"}
+								color={"secondary-darkblue"}
+							/>
+						</div>
+
+						{view === "grid" ? (
+							<div className="flex flex-col gap-30">
+								{filteredTechData.slice(0, visibleCount).map((data, index) => (
+									<TechCard
+										key={index}
+										_id={data._id}
+										techName={data.techName}
+										techDescription={data.techDescription}
+										techProvider={data.techProvider}
+										owner={data.owner}
+										selectedOptions={data.selectedOptions}
+										sectorOptions={data.sectorOptions}
+										techSrcOptions={data.techSrcOptions}
+										addedValue={data.addedValue}
+										devCo={data.devCo}
+										businessChallenge={data.businessChallenge}
+										challenges={data.challenges}
+										attachments={data.attachments}
+										currentStage={data.currentStage}
+										technologyId={data.technologyId}
+										createdAt={""}
+									/>
+								))}
+							</div>
+						) : (
+							<div className="flex flex-row w-full">
+								<ListViewComp
+									data={techData}
+									headers={["Tech ID", "Tech Name", "Current Stage", "Creation Date", "Added Value", "Tech Provider"]}
+									renderRow={(tech, index) => (
+										<tr
+											key={index}
+											className="border-b border-b-divider">
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">{tech.technologyId || "N/A"}</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">
+												<div className="flex items-center gap-2">
+													<div className="flex flex-col gap-5">
+														<p className="text-subtitle2 font-semibold">{tech.techName}</p>
+													</div>
+												</div>
+											</td>
+											<td className="px-[15px] py-[20px] text-body3">
+												<span
+													className={`px-[15px] py-5 min-w-[95px] rounded-full text-white text-body2 font-light ${
+														tech.currentStage === "Screening"
+															? "bg-secondary-red"
+															: tech.currentStage === "Scouting"
+															? "bg-other-cyan"
+															: tech.currentStage === "Engagement"
+															? "bg-primary-green"
+															: "bg-primary-gold"
+													}`}>
+													{tech.currentStage}
+												</span>
+											</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">
+												{renderFullDate(tech.createdAt) || "N/A"}
+											</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">
+												{tech.addedValue?.join(", ") || "N/A"}
+											</td>
+											<td className="px-[15px] py-[20px] text-body3 text-gray-3">{tech.techProvider || "N/A"}</td>
+										</tr>
+									)}
+								/>
+							</div>
+						)}
+					</div>
 				</TabsContent>
 			</Tabs>
 		</div>

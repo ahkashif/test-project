@@ -8,7 +8,7 @@ interface FormTypes {
 	comments: string;
 }
 
-function PlanningToScaling({ planningPilot, closeForm }: { planningPilot: PilotTypes; closeForm: () => void }) {
+function PlanningToDev({ planningPilot, closeForm }: { planningPilot: PilotTypes; closeForm: () => void }) {
 	const {
 		register,
 		handleSubmit,
@@ -21,7 +21,7 @@ function PlanningToScaling({ planningPilot, closeForm }: { planningPilot: PilotT
 			if (data.action === "approve") {
 				const response = await axios.put("/api/common/pilots/update-stage", {
 					id: planningPilot._id,
-					currStage: "Assessment",
+					currStage: "dev-approved",
 				});
 
 				if (response.status === 200) {
@@ -109,4 +109,4 @@ function PlanningToScaling({ planningPilot, closeForm }: { planningPilot: PilotT
 	);
 }
 
-export default PlanningToScaling;
+export default PlanningToDev;
